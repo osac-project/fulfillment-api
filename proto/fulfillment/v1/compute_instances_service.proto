@@ -15,11 +15,11 @@ syntax = "proto3";
 
 package fulfillment.v1;
 
-import "fulfillment/v1/virtual_machine_type.proto";
+import "fulfillment/v1/compute_instance_type.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/field_mask.proto";
 
-message VirtualMachinesListRequest {
+message ComputeInstancesListRequest {
   // Index of the first result. If not specified the default value will be zero.
   optional int32 offset = 1;
 
@@ -31,20 +31,20 @@ message VirtualMachinesListRequest {
   // Filter criteria.
   //
   // The syntax of this parameter is similar to the syntax of the _where_ clause of a SQL statement, but using the names
-  // of the attributes of the virtual machine instead of the names of the columns of a table. For example, in order to retrieve
-  // all the virtual machines with an IP address starting with `192.168` the value should be:
+  // of the attributes of the compute instance instead of the names of the columns of a table. For example, in order to retrieve
+  // all the compute instances with an IP address starting with `192.168` the value should be:
   //
   //     ip_address like '192.168%'
   //
-  // If this isn't provided, or if the value is empty, then all the virtual machines that the user has permission to see will be
+  // If this isn't provided, or if the value is empty, then all the compute instances that the user has permission to see will be
   // returned.
   optional string filter = 3;
 
   // Order criteria.
   //
   // The syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the
-  // names of the attributes of the virtual machine instead of the names of the columns of a table. For example, in order to
-  // sort the virtual machines descending by IP address the value should be:
+  // names of the attributes of the compute instance instead of the names of the columns of a table. For example, in order to
+  // sort the compute instances descending by IP address the value should be:
   //
   //     ip_address desc
   //
@@ -52,7 +52,7 @@ message VirtualMachinesListRequest {
   optional string order = 4;
 }
 
-message VirtualMachinesListResponse {
+message ComputeInstancesListResponse {
   // Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter
   // of the request if there are not enough items, or of the system decides that returning that number of items isn't
   // feasible or convenient for performance reasons.
@@ -63,74 +63,74 @@ message VirtualMachinesListResponse {
   optional int32 total = 2;
 
   // List of results.
-  repeated VirtualMachine items = 3;
+  repeated ComputeInstance items = 3;
 }
 
-message VirtualMachinesGetRequest {
+message ComputeInstancesGetRequest {
   string id = 1;
 }
 
-message VirtualMachinesGetResponse {
-  VirtualMachine object = 1;
+message ComputeInstancesGetResponse {
+  ComputeInstance object = 1;
 }
 
-message VirtualMachinesCreateRequest {
-  VirtualMachine object = 1;
+message ComputeInstancesCreateRequest {
+  ComputeInstance object = 1;
 }
 
-message VirtualMachinesCreateResponse {
-  VirtualMachine object = 1;
+message ComputeInstancesCreateResponse {
+  ComputeInstance object = 1;
 }
 
-message VirtualMachinesUpdateRequest {
-  VirtualMachine object = 1;
+message ComputeInstancesUpdateRequest {
+  ComputeInstance object = 1;
   google.protobuf.FieldMask update_mask = 2;
 }
 
-message VirtualMachinesUpdateResponse {
-  VirtualMachine object = 1;
+message ComputeInstancesUpdateResponse {
+  ComputeInstance object = 1;
 }
 
-message VirtualMachinesDeleteRequest {
+message ComputeInstancesDeleteRequest {
   string id = 1;
 }
 
-message VirtualMachinesDeleteResponse {}
+message ComputeInstancesDeleteResponse {}
 
-service VirtualMachines {
-  // Retrieves the list of virtual machines.
-  rpc List(VirtualMachinesListRequest) returns (VirtualMachinesListResponse) {
-    option (google.api.http) = {get: "/api/fulfillment/v1/virtual_machines"};
+service ComputeInstances {
+  // Retrieves the list of compute instances.
+  rpc List(ComputeInstancesListRequest) returns (ComputeInstancesListResponse) {
+    option (google.api.http) = {get: "/api/fulfillment/v1/compute_instances"};
   }
 
-  // Retrieves the details of one specific virtual machine.
-  rpc Get(VirtualMachinesGetRequest) returns (VirtualMachinesGetResponse) {
+  // Retrieves the details of one specific compute instance.
+  rpc Get(ComputeInstancesGetRequest) returns (ComputeInstancesGetResponse) {
     option (google.api.http) = {
-      get: "/api/fulfillment/v1/virtual_machines/{id}"
+      get: "/api/fulfillment/v1/compute_instances/{id}"
       response_body: "object"
     };
   }
 
-  // Creates a new virtual machine.
+  // Creates a new compute instance.
   //
-  // Note that this operation is not allowed for regular users, only for the server. Regular users create virtual machines
-  // indirectly, creating a virtual machine order that will eventually result in the system creating a virtual machine.
-  rpc Create(VirtualMachinesCreateRequest) returns (VirtualMachinesCreateResponse) {
+  // Note that this operation is not allowed for regular users, only for the server. Regular users create compute instances
+  // indirectly, creating a compute instance order that will eventually result in the system creating a compute instance.
+  rpc Create(ComputeInstancesCreateRequest) returns (ComputeInstancesCreateResponse) {
     option (google.api.http) = {
-      post: "/api/fulfillment/v1/virtual_machines"
+      post: "/api/fulfillment/v1/compute_instances"
       body: "object"
       response_body: "object"
     };
   }
 
-  // Updates an existing virtual machine.
+  // Updates an existing compute instance.
   //
   // In the HTTP+JSON version of the API this is mapped to the `PATCH` verb and the `update_mask` field is automatically
-  // populated from the list of fields present in the request body. For example, to update the `state` of a virtual machine to
+  // populated from the list of fields present in the request body. For example, to update the `state` of a compute instance to
   // `READY` the request line should be like this:
   //
   // ```http
-  // PATCH /api/fulfillment/v1/virtual_machines/123
+  // PATCH /api/fulfillment/v1/compute_instances/123
   // ```
   //
   // And the request body should be like this:
@@ -138,22 +138,22 @@ service VirtualMachines {
   // ```json
   // {
   //   "status": {
-  //     "state": "VIRTUAL_MACHINE_STATE_READY"
+  //     "state": "COMPUTE_INSTANCE_STATE_READY"
   //   }
   // }
   // ```
   //
   // The response body will contain the modified object.
-  rpc Update(VirtualMachinesUpdateRequest) returns (VirtualMachinesUpdateResponse) {
+  rpc Update(ComputeInstancesUpdateRequest) returns (ComputeInstancesUpdateResponse) {
     option (google.api.http) = {
-      patch: "/api/fulfillment/v1/virtual_machines/{object.id}"
+      patch: "/api/fulfillment/v1/compute_instances/{object.id}"
       body: "object"
       response_body: "object"
     };
   }
 
-  // Delete a virtual machine.
-  rpc Delete(VirtualMachinesDeleteRequest) returns (VirtualMachinesDeleteResponse) {
-    option (google.api.http) = {delete: "/api/fulfillment/v1/virtual_machines/{id}"};
+  // Delete a compute instance.
+  rpc Delete(ComputeInstancesDeleteRequest) returns (ComputeInstancesDeleteResponse) {
+    option (google.api.http) = {delete: "/api/fulfillment/v1/compute_instances/{id}"};
   }
 }

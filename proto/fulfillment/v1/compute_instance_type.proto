@@ -20,33 +20,33 @@ import "google/protobuf/timestamp.proto";
 import "shared/v1/condition_status_type.proto";
 import "shared/v1/metadata_type.proto";
 
-// Contains the details of the virtual machine.
+// Contains the details of the compute instance.
 //
 // The `spec` contains the desired details, and may be modified by the user. The `status` contains the current status of
-// the virtual machine, is provided by the system and can't be modified by the user.
-message VirtualMachine {
-  // Unique identifier of the virtual machine.
+// the compute instance, is provided by the system and can't be modified by the user.
+message ComputeInstance {
+  // Unique identifier of the compute instance.
   string id = 1;
 
   shared.v1.Metadata metadata = 2;
-  VirtualMachineSpec spec = 3;
-  VirtualMachineStatus status = 4;
+  ComputeInstanceSpec spec = 3;
+  ComputeInstanceStatus status = 4;
 }
 
-// The spec contains the details of a virtual machine as desired by the user.
-message VirtualMachineSpec {
-  // Reference to the virtual machine template.
+// The spec contains the details of a compute instance as desired by the user.
+message ComputeInstanceSpec {
+  // Reference to the compute instance template.
   //
-  // This is mandatory, and must be the value of the `id` field of one of the virtual machine templates.
+  // This is mandatory, and must be the value of the `id` field of one of the compute instance templates.
   //
-  // This can't be modified after the virtual machine is created.
+  // This can't be modified after the compute instance is created.
   string template = 1;
 
   // Values of the template parameters.
   //
   // When using the HTTP+JSON version of the API the values must be represented as documented in the (ProtoJSON format
   // document)[https://protobuf.dev/programming-guides/json]. For example, if the template has a `cpu_count`
-  // parameter of integer type, the complete virtual machine should be represented like this:
+  // parameter of integer type, the complete compute instance should be represented like this:
   //
   // ```json
   // {
@@ -77,34 +77,34 @@ message VirtualMachineSpec {
   // | Array of bytes                 | `type.googleapis.com/google.protobuf.BytesValue`  |
   // | Any JSON value                 | `type.googleapis.com/google.protobuf.Value`       |
   //
-  // These parameters can't be modified after the virtual machine is created.
+  // These parameters can't be modified after the compute instance is created.
   map<string, google.protobuf.Any> template_parameters = 2;
 }
 
-// The status contains the details of the virtual machine provided by the system.
-message VirtualMachineStatus {
-  // Indicates the overall state of the virtual machine.
-  VirtualMachineState state = 1;
+// The status contains the details of the compute instance provided by the system.
+message ComputeInstanceStatus {
+  // Indicates the overall state of the compute instance.
+  ComputeInstanceState state = 1;
 
-  // Contains a list of conditions that describe in detail the status of the virtual machine.
+  // Contains a list of conditions that describe in detail the status of the compute instance.
   //
-  // For example, a virtual machine that is ready could be represented like this (when converted to JSON):
+  // For example, a compute instance that is ready could be represented like this (when converted to JSON):
   //
   //    {
   //      "id": "123",
   //      "spec": {
   //      },
   //      "status": {
-  //        "state": "VIRTUAL_MACHINE_STATE_READY",
+  //        "state": "COMPUTE_INSTANCE_STATE_READY",
   //        "conditions": [
   //          {
-  //            "type": "VIRTUAL_MACHINE_CONDITION_TYPE_READY",
+  //            "type": "COMPUTE_INSTANCE_CONDITION_TYPE_READY",
   //            "status": "CONDITION_STATUS_TRUE",
   //            "last_transition_time": "2025-03-12 20:15:59+00:00",
-  //            "message": "The virtual machine is ready to use",
+  //            "message": "The compute instance is ready to use",
   //          },
   //          {
-  //            "type": "VIRTUAL_MACHINE_CONDITION_TYPE_FAILED",
+  //            "type": "COMPUTE_INSTANCE_CONDITION_TYPE_FAILED",
   //            "status": "CONDITION_STATUS_FALSE",
   //            "last_transition_time": "2025-03-12 20:10:59+00:00"
   //          }
@@ -112,43 +112,43 @@ message VirtualMachineStatus {
   //      }
   //    }
   //
-  // In this example the `READY` condition is true. That tells us that the virtual machine is ready to use via the IP address
+  // In this example the `READY` condition is true. That tells us that the compute instance is ready to use via the IP address
   // provided in the `status.ip_address` field.
   //
-  // The `FAILED` condition is false. That tells us that the virtual machine is *not* failed.
+  // The `FAILED` condition is false. That tells us that the compute instance is *not* failed.
   //
   // Note that in this example, to make it shorter, only one condition appears. In general all the conditions (except
   // `UNSPECIFIED`) will appear exactly once.
   //
-  // Check the documentation of the values of the `VirtualMachineConditionType` enumerated type to see possible conditions and
+  // Check the documentation of the values of the `ComputeInstanceConditionType` enumerated type to see possible conditions and
   // reasons.
-  repeated VirtualMachineCondition conditions = 2;
+  repeated ComputeInstanceCondition conditions = 2;
 
-  // IP address of the virtual machine.
+  // IP address of the compute instance.
   //
-  // This will be empty if the virtual machine isn't ready.
+  // This will be empty if the compute instance isn't ready.
   string ip_address = 3;
 }
 
-// Represents the overall state of a virtual machine.
-enum VirtualMachineState {
+// Represents the overall state of a compute instance.
+enum ComputeInstanceState {
   // Unspecified indicates that the state is unknown.
-  VIRTUAL_MACHINE_STATE_UNSPECIFIED = 0;
+  COMPUTE_INSTANCE_STATE_UNSPECIFIED = 0;
 
-  // Indicates that the virtual machine isn't ready yet.
-  VIRTUAL_MACHINE_STATE_PROGRESSING = 1;
+  // Indicates that the compute instance isn't ready yet.
+  COMPUTE_INSTANCE_STATE_PROGRESSING = 1;
 
-  // Indicates that the virtual machine is ready.
-  VIRTUAL_MACHINE_STATE_READY = 2;
+  // Indicates that the compute instance is ready.
+  COMPUTE_INSTANCE_STATE_READY = 2;
 
-  // Indicates that the virtual machine is unusable.
-  VIRTUAL_MACHINE_STATE_FAILED = 3;
+  // Indicates that the compute instance is unusable.
+  COMPUTE_INSTANCE_STATE_FAILED = 3;
 }
 
-// Contains the details of a condition that describes the status of a virtual machine.
-message VirtualMachineCondition {
+// Contains the details of a condition that describes the status of a compute instance.
+message ComputeInstanceCondition {
   // Indicates the type of condition.
-  VirtualMachineConditionType type = 1;
+  ComputeInstanceConditionType type = 1;
 
   // Indicates the status of the condition.
   shared.v1.ConditionStatus status = 2;
@@ -167,28 +167,28 @@ message VirtualMachineCondition {
   optional string message = 5;
 }
 
-// Types of conditions used to describe the status of virtual machine.
-enum VirtualMachineConditionType {
+// Types of conditions used to describe the status of compute instance.
+enum ComputeInstanceConditionType {
   // Unspecified indicates that the condition is unknown.
   //
-  // This will never be appear in the `spec.conditions` field of a virtual machine.
-  VIRTUAL_MACHINE_CONDITION_TYPE_UNSPECIFIED = 0;
+  // This will never be appear in the `spec.conditions` field of a compute instance.
+  COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED = 0;
 
-  // Indicates that the virtual machine isn't completely ready yet.
+  // Indicates that the compute instance isn't completely ready yet.
   //
   // Currently there are no `reason` values defined.
-  VIRTUAL_MACHINE_CONDITION_TYPE_PROGRESSING = 1;
+  COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING = 1;
 
-  // Indicates that the virtual machine is ready to use.
+  // Indicates that the compute instance is ready to use.
   //
   // Currently there are no `reason` values defined.
-  VIRTUAL_MACHINE_CONDITION_TYPE_READY = 2;
+  COMPUTE_INSTANCE_CONDITION_TYPE_READY = 2;
 
-  // Indicates that the virtual machine is unusable.
+  // Indicates that the compute instance is unusable.
   //
   // Currently there are no `reason` values defined.
-  VIRTUAL_MACHINE_CONDITION_TYPE_FAILED = 3;
+  COMPUTE_INSTANCE_CONDITION_TYPE_FAILED = 3;
 
-  // Indicates that the virtual machine is degraded.
-  VIRTUAL_MACHINE_CONDITION_TYPE_DEGRADED = 4;
+  // Indicates that the compute instance is degraded.
+  COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED = 4;
 }

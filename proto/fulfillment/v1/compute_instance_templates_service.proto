@@ -15,11 +15,11 @@ syntax = "proto3";
 
 package fulfillment.v1;
 
-import "fulfillment/v1/virtual_machine_template_type.proto";
+import "fulfillment/v1/compute_instance_template_type.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/field_mask.proto";
 
-message VirtualMachineTemplatesListRequest {
+message ComputeInstanceTemplatesListRequest {
   // Index of the first result. If not specified the default value will be zero.
   optional int32 offset = 1;
 
@@ -52,7 +52,7 @@ message VirtualMachineTemplatesListRequest {
   optional string order = 4;
 }
 
-message VirtualMachineTemplatesListResponse {
+message ComputeInstanceTemplatesListResponse {
   // Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter
   // of the request if there are not enough items, or of the system decides that returning that number of items isn't
   // feasible or convenient for performance reasons.
@@ -63,74 +63,74 @@ message VirtualMachineTemplatesListResponse {
   optional int32 total = 4;
 
   // List of results.
-  repeated VirtualMachineTemplate items = 5;
+  repeated ComputeInstanceTemplate items = 5;
 }
 
-message VirtualMachineTemplatesGetRequest {
+message ComputeInstanceTemplatesGetRequest {
   string id = 1;
 }
 
-message VirtualMachineTemplatesGetResponse {
-  VirtualMachineTemplate object = 1;
+message ComputeInstanceTemplatesGetResponse {
+  ComputeInstanceTemplate object = 1;
 }
 
-message VirtualMachineTemplatesCreateRequest {
-  VirtualMachineTemplate object = 1;
+message ComputeInstanceTemplatesCreateRequest {
+  ComputeInstanceTemplate object = 1;
 }
 
-message VirtualMachineTemplatesCreateResponse {
-  VirtualMachineTemplate object = 1;
+message ComputeInstanceTemplatesCreateResponse {
+  ComputeInstanceTemplate object = 1;
 }
 
-message VirtualMachineTemplatesUpdateRequest {
-  VirtualMachineTemplate object = 1;
+message ComputeInstanceTemplatesUpdateRequest {
+  ComputeInstanceTemplate object = 1;
   google.protobuf.FieldMask update_mask = 2;
 }
 
-message VirtualMachineTemplatesUpdateResponse {
-  VirtualMachineTemplate object = 1;
+message ComputeInstanceTemplatesUpdateResponse {
+  ComputeInstanceTemplate object = 1;
 }
 
-message VirtualMachineTemplatesDeleteRequest {
+message ComputeInstanceTemplatesDeleteRequest {
   string id = 1;
 }
 
-message VirtualMachineTemplatesDeleteResponse {}
+message ComputeInstanceTemplatesDeleteResponse {}
 
-service VirtualMachineTemplates {
-  // Retrieves the list of virtual machine templates.
-  rpc List(VirtualMachineTemplatesListRequest) returns (VirtualMachineTemplatesListResponse) {
-    option (google.api.http) = {get: "/api/fulfillment/v1/virtual_machine_templates"};
+service ComputeInstanceTemplates {
+  // Retrieves the list of compute instance templates.
+  rpc List(ComputeInstanceTemplatesListRequest) returns (ComputeInstanceTemplatesListResponse) {
+    option (google.api.http) = {get: "/api/fulfillment/v1/compute_instance_templates"};
   }
 
-  // Retrieves the details of one specific virtual machine template.
-  rpc Get(VirtualMachineTemplatesGetRequest) returns (VirtualMachineTemplatesGetResponse) {
+  // Retrieves the details of one specific compute instance template.
+  rpc Get(ComputeInstanceTemplatesGetRequest) returns (ComputeInstanceTemplatesGetResponse) {
     option (google.api.http) = {
-      get: "/api/fulfillment/v1/virtual_machine_templates/{id}"
+      get: "/api/fulfillment/v1/compute_instance_templates/{id}"
       response_body: "object"
     };
   }
 
-  // Creates a new virtual machine template.
-  rpc Create(VirtualMachineTemplatesCreateRequest) returns (VirtualMachineTemplatesCreateResponse) {
+  // Creates a new compute instance template.
+  rpc Create(ComputeInstanceTemplatesCreateRequest) returns (ComputeInstanceTemplatesCreateResponse) {
     option (google.api.http) = {
-      post: "/api/fulfillment/v1/virtual_machine_templates"
+      post: "/api/fulfillment/v1/compute_instance_templates"
       body: "object"
       response_body: "object"
     };
   }
 
-  // Updates an existing virtual machine template.
-  rpc Update(VirtualMachineTemplatesUpdateRequest) returns (VirtualMachineTemplatesUpdateResponse) {
+  // Updates an existing compute instance template.
+  rpc Update(ComputeInstanceTemplatesUpdateRequest) returns (ComputeInstanceTemplatesUpdateResponse) {
     option (google.api.http) = {
-      patch: "/api/fulfillment/v1/virtual_machine_templates/{object.id}"
+      patch: "/api/fulfillment/v1/compute_instance_templates/{object.id}"
       body: "object"
       response_body: "object"
     };
   }
 
-  // Delete a virtual machine template.
-  rpc Delete(VirtualMachineTemplatesDeleteRequest) returns (VirtualMachineTemplatesDeleteResponse) {
-    option (google.api.http) = {delete: "/api/fulfillment/v1/virtual_machine_templates/{id}"};
+  // Delete a compute instance template.
+  rpc Delete(ComputeInstanceTemplatesDeleteRequest) returns (ComputeInstanceTemplatesDeleteResponse) {
+    option (google.api.http) = {delete: "/api/fulfillment/v1/compute_instance_templates/{id}"};
   }
 }

@@ -18,9 +18,9 @@ package fulfillment.v1;
 import "google/protobuf/any.proto";
 import "shared/v1/metadata_type.proto";
 
-// A virtual machine template defines a type of virtual machine that can be created by the user. Note that the user doesn't create these
+// A compute instance template defines a type of compute instance that can be created by the user. Note that the user doesn't create these
 // templates: the system provides a collection of them, and the user chooses one.
-message VirtualMachineTemplate {
+message ComputeInstanceTemplate {
   // Unique identifier of the template.
   string id = 1;
 
@@ -36,15 +36,15 @@ message VirtualMachineTemplate {
   // Definitions of the parameters that can be used to customize the template.
   //
   // Note that these are only the *definitions* of the parameters, not the actual values. The actual values are in the
-  // `spec.template_parameters` field of the virtual machine.
-  repeated VirtualMachineTemplateParameterDefinition parameters = 5;
+  // `spec.template_parameters` field of the compute instance.
+  repeated ComputeInstanceTemplateParameterDefinition parameters = 5;
 }
 
 // Contains type and documentation of a template parameter.
-message VirtualMachineTemplateParameterDefinition {
+message ComputeInstanceTemplateParameterDefinition {
   // Name of the parameter.
   //
-  // This is the name that should be used in the `template_parameters` field of the virtual machine to assign a value to the
+  // This is the name that should be used in the `template_parameters` field of the compute instance to assign a value to the
   // parameter.
   string name = 1;
 
@@ -57,9 +57,9 @@ message VirtualMachineTemplateParameterDefinition {
 
   // Indicates if this parameter is required or optional.
   //
-  // Values for required parameters must be included when creating the virtual machine, otherwise it will be rejected.
+  // Values for required parameters must be included when creating the compute instance, otherwise it will be rejected.
   //
-  // Note that there may be other dependencies between parameters which may cause a virtual machine to be rejected. For example,
+  // Note that there may be other dependencies between parameters which may cause a compute instance to be rejected. For example,
   // the allowed values of a parameter may depend on the value of another parameter. That kind of information will be in
   // the `description` field.
   bool required = 4;
@@ -81,7 +81,7 @@ message VirtualMachineTemplateParameterDefinition {
   // | Array of bytes                 | `type.googleapis.com/google.protobuf.BytesValue`  |
   // | Any JSON value                 | `type.googleapis.com/google.protobuf.Value`       |
   //
-  // When using the HTTP+JSON version of the API the value provided in the `template_parameters` field of the virtual machine
+  // When using the HTTP+JSON version of the API the value provided in the `template_parameters` field of the compute instance
   // must be represented as documented in the (ProtoJSON format document)[https://protobuf.dev/programming-guides/json].
   string type = 5;
 
