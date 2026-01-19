@@ -2041,10 +2041,12 @@
         "COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING",
         "COMPUTE_INSTANCE_CONDITION_TYPE_READY",
         "COMPUTE_INSTANCE_CONDITION_TYPE_FAILED",
-        "COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED"
+        "COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED",
+        "COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_SCHEDULED",
+        "COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_FAILED"
       ],
       "default": "COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED",
-      "description": "Types of conditions used to describe the status of compute instance.\n\n - COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED: Unspecified indicates that the condition is unknown.\n\nThis will never be appear in the `spec.conditions` field of a compute instance.\n - COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING: Indicates that the compute instance isn't completely ready yet.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_READY: Indicates that the compute instance is ready to use.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_FAILED: Indicates that the compute instance is unusable.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED: Indicates that the compute instance is degraded."
+      "description": "Types of conditions used to describe the status of compute instance.\n\n - COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED: Unspecified indicates that the condition is unknown.\n\nThis will never be appear in the `spec.conditions` field of a compute instance.\n - COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING: Indicates that the compute instance isn't completely ready yet.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_READY: Indicates that the compute instance is ready to use.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_FAILED: Indicates that the compute instance is unusable.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED: Indicates that the compute instance is degraded.\n - COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_SCHEDULED: Indicates that a reboot is scheduled for this compute instance.\n\nWhen `status` is `TRUE`, it means a reboot is pending at the time specified\nin `spec.next_reboot_time`.\n\nPossible `reason` values:\n- `RebootPending`: The reboot is scheduled and waiting for the scheduled time.\n\nWhen `status` is `FALSE`, the reboot has either completed, been cancelled, or is in progress.\n\nPossible `reason` values when false:\n- `RebootInProgress`: The reboot has been initiated (VMI deleted).\n- `RebootCancelled`: The reboot was cancelled (e.g., VM not running, user cancelled).\n - COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_FAILED: Indicates that a scheduled reboot has failed.\n\nWhen `status` is `TRUE`, it means the reboot could not be executed.\n\nPossible `reason` values:\n- `InvalidRebootTime`: The `spec.next_reboot_time` is invalid (past time, less than 2 minutes in future, bad format).\n- `RebootWindowMissed`: The controller was down during the scheduled reboot time and came back after the 5-minute grace period.\n- `VMIDeletionFailed`: The VirtualMachineInstance could not be deleted to trigger the reboot.\n\nWhen `status` is `FALSE`, there is no reboot failure."
     },
     "v1ComputeInstanceSpec": {
       "type": "object",
@@ -2059,6 +2061,11 @@
             "$ref": "#/definitions/protobufAny"
           },
           "description": "Values of the template parameters.\n\nWhen using the HTTP+JSON version of the API the values must be represented as documented in the (ProtoJSON format\ndocument)[https://protobuf.dev/programming-guides/json]. For example, if the template has a `cpu_count`\nparameter of integer type, the complete compute instance should be represented like this:\n\n```json\n{\n  \"spec\": {\n    \"template\": \"123\",\n    \"template_parameters\": {\n      \"cpu_count\": {\n        \"@type\": \"type.googleapis.com/google.protobuf.Int32Value\",\n        \"value\": 4\n      }\n    }\n  }\n}\n```\n\nThe possible values of the `@type` are the same as those used by the `type_url` field of the `Any` type:\n\n| Type                           | Value                                             |\n|--------------------------------|---------------------------------------------------|\n| Boolean                        | `type.googleapis.com/google.protobuf.BoolValue`   |\n| Integer number, 32 bits        | `type.googleapis.com/google.protobuf.Int32Value`  |\n| Integer number, 64 bits        | `type.googleapis.com/google.protobuf.Int64Value`  |\n| Floating point number, 32 bits | `type.googleapis.com/google.protobuf.FloatValue`  |\n| Floating point number, 64 bits | `type.googleapis.com/google.protobuf.DoubleValue` |\n| String                         | `type.googleapis.com/google.protobuf.StringValue` |\n| Timestamp                      | `type.googleapis.com/google.protobuf.Timestamp`   |\n| Duration                       | `type.googleapis.com/google.protobuf.Duration`    |\n| Array of bytes                 | `type.googleapis.com/google.protobuf.BytesValue`  |\n| Any JSON value                 | `type.googleapis.com/google.protobuf.Value`       |\n\nThese parameters can't be modified after the compute instance is created."
+        },
+        "next_reboot_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "NextRebootTime schedules a VM reboot at the specified time (RFC3339 UTC).\n\nMust be at least 2 minutes in the future to avoid race conditions where\nthe controller might miss the reboot window due to reconciliation delays,\nnetwork latency, or clock skew between components.\n\nThe controller will execute the reboot if it reconciles within 5 minutes\nof the scheduled time (grace period). After 5 minutes, the reboot is\nconsidered missed and will be marked as failed with a `RebootFailed` condition\n(reason: `RebootWindowMissed`).\n\nThis is a single-shot operation - the field is cleared after reboot completes or fails.\n\nExample (when converted to JSON):\n\n   {\n     \"spec\": {\n       \"template\": \"123\",\n       \"next_reboot_time\": \"2026-01-15T02:00:00Z\"\n     }\n   }"
         }
       },
       "description": "The spec contains the details of a compute instance as desired by the user."
@@ -2092,6 +2099,11 @@
         "ip_address": {
           "type": "string",
           "description": "IP address of the compute instance.\n\nThis will be empty if the compute instance isn't ready."
+        },
+        "last_reboot_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "LastRebootTime records the timestamp of the last successful reboot.\n\nThis field is set by the system when a scheduled reboot completes successfully.\nIt will be empty if no reboot has been performed yet.\n\nExample (when converted to JSON):\n\n   {\n     \"status\": {\n       \"state\": \"COMPUTE_INSTANCE_STATE_READY\",\n       \"last_reboot_time\": \"2026-01-14T02:00:00Z\"\n     }\n   }"
         }
       },
       "description": "The status contains the details of the compute instance provided by the system."

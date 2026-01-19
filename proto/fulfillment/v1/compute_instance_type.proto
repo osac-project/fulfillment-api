@@ -79,6 +79,30 @@ message ComputeInstanceSpec {
   //
   // These parameters can't be modified after the compute instance is created.
   map<string, google.protobuf.Any> template_parameters = 2;
+
+  // NextRebootTime schedules a VM reboot at the specified time (RFC3339 UTC).
+  //
+  // Must be at least 2 minutes in the future to avoid race conditions where
+  // the controller might miss the reboot window due to reconciliation delays,
+  // network latency, or clock skew between components.
+  //
+  // The controller will execute the reboot if it reconciles within 5 minutes
+  // of the scheduled time (grace period). After 5 minutes, the reboot is
+  // considered missed and will be marked as failed with a `RebootFailed` condition
+  // (reason: `RebootWindowMissed`).
+  //
+  // This is a single-shot operation - the field is cleared after reboot completes or fails.
+  //
+  // Example (when converted to JSON):
+  //
+  //    {
+  //      "spec": {
+  //        "template": "123",
+  //        "next_reboot_time": "2026-01-15T02:00:00Z"
+  //      }
+  //    }
+  //
+  optional google.protobuf.Timestamp next_reboot_time = 3;
 }
 
 // The status contains the details of the compute instance provided by the system.
@@ -128,6 +152,22 @@ message ComputeInstanceStatus {
   //
   // This will be empty if the compute instance isn't ready.
   string ip_address = 3;
+
+  // LastRebootTime records the timestamp of the last successful reboot.
+  //
+  // This field is set by the system when a scheduled reboot completes successfully.
+  // It will be empty if no reboot has been performed yet.
+  //
+  // Example (when converted to JSON):
+  //
+  //    {
+  //      "status": {
+  //        "state": "COMPUTE_INSTANCE_STATE_READY",
+  //        "last_reboot_time": "2026-01-14T02:00:00Z"
+  //      }
+  //    }
+  //
+  optional google.protobuf.Timestamp last_reboot_time = 4;
 }
 
 // Represents the overall state of a compute instance.
@@ -191,4 +231,31 @@ enum ComputeInstanceConditionType {
 
   // Indicates that the compute instance is degraded.
   COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED = 4;
+
+  // Indicates that a reboot is scheduled for this compute instance.
+  //
+  // When `status` is `TRUE`, it means a reboot is pending at the time specified
+  // in `spec.next_reboot_time`.
+  //
+  // Possible `reason` values:
+  // - `RebootPending`: The reboot is scheduled and waiting for the scheduled time.
+  //
+  // When `status` is `FALSE`, the reboot has either completed, been cancelled, or is in progress.
+  //
+  // Possible `reason` values when false:
+  // - `RebootInProgress`: The reboot has been initiated (VMI deleted).
+  // - `RebootCancelled`: The reboot was cancelled (e.g., VM not running, user cancelled).
+  COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_SCHEDULED = 5;
+
+  // Indicates that a scheduled reboot has failed.
+  //
+  // When `status` is `TRUE`, it means the reboot could not be executed.
+  //
+  // Possible `reason` values:
+  // - `InvalidRebootTime`: The `spec.next_reboot_time` is invalid (past time, less than 2 minutes in future, bad format).
+  // - `RebootWindowMissed`: The controller was down during the scheduled reboot time and came back after the 5-minute grace period.
+  // - `VMIDeletionFailed`: The VirtualMachineInstance could not be deleted to trigger the reboot.
+  //
+  // When `status` is `FALSE`, there is no reboot failure.
+  COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_FAILED = 6;
 }
