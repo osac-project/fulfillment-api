@@ -82,14 +82,14 @@ message ComputeInstanceSpec {
 
   // NextRebootTime schedules a VM reboot at the specified time (RFC3339 UTC).
   //
-  // Must be at least 2 minutes in the future to avoid race conditions where
-  // the controller might miss the reboot window due to reconciliation delays,
-  // network latency, or clock skew between components.
-  //
   // The controller will execute the reboot if it reconciles within 5 minutes
   // of the scheduled time (grace period). After 5 minutes, the reboot is
   // considered missed and will be marked as failed with a `RebootFailed` condition
   // (reason: `RebootWindowMissed`).
+  //
+  // You can schedule immediate reboots (e.g., seconds from now), though if
+  // API/reconciliation latency causes the window to be missed, it will be
+  // clearly reported as RebootWindowMissed.
   //
   // This is a single-shot operation - the field is cleared after reboot completes or fails.
   //
