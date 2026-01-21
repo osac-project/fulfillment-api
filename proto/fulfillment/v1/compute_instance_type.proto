@@ -246,10 +246,8 @@ enum ComputeInstanceConditionType {
   // Indicates that a restart request has failed.
   //
   // When `status` is `TRUE`, it means the restart could not be executed.
-  //
-  // Possible `reason` values:
-  // - `NoVMReference`: No VirtualMachine reference found.
-  // - `VMIDeletionFailed`: Failed to execute the restart.
+  // The `message` field will contain details about the failure.
+  // If the issue persists, please contact your administrator.
   //
   // When `status` is `FALSE`, there is no restart failure.
   COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED = 6;
