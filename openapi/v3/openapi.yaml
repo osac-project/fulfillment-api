@@ -2325,7 +2325,7 @@ components:
 
         Possible `reason` values:
         - `RestartRequested`: A restart has been requested via `spec.restart_requested_at`.
-        - `RestartInProgress`: The restart has been initiated (VMI deleted).
+        - `RestartInProgress`: The restart has been initiated.
 
         When `status` is `FALSE`, no restart is currently in progress.
          - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED: Indicates that a restart request has failed.
@@ -2334,7 +2334,7 @@ components:
 
         Possible `reason` values:
         - `NoVMReference`: No VirtualMachine reference found.
-        - `VMIDeletionFailed`: The VirtualMachineInstance could not be deleted to trigger the restart.
+        - `VMIDeletionFailed`: Failed to execute the restart.
 
         When `status` is `FALSE`, there is no restart failure.
       default: COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED
@@ -2401,7 +2401,7 @@ components:
         restart_requested_at:
           type: string
           description: |-
-            RestartRequestedAt is a timestamp signal to request a VM restart.
+            RestartRequestedAt is a timestamp signal to request a ComputeInstance restart.
 
             Set this field to the current time (usually NOW) to request a restart.
             The controller will execute the restart if this timestamp is greater than
