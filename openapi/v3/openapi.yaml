@@ -2319,24 +2319,24 @@ components:
 
         Currently there are no `reason` values defined.
          - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED: Indicates that the compute instance is degraded.
-         - COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_IN_PROGRESS: Indicates that a reboot is in progress.
+         - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS: Indicates that a restart is in progress.
 
-        When `status` is `TRUE`, it means a reboot is currently in progress.
+        When `status` is `TRUE`, it means a restart is currently in progress.
 
         Possible `reason` values:
         - `RestartRequested`: A restart has been requested via `spec.restart_requested_at`.
-        - `RebootInProgress`: The reboot has been initiated (VMI deleted).
+        - `RestartInProgress`: The restart has been initiated (VMI deleted).
 
-        When `status` is `FALSE`, no reboot is currently in progress.
-         - COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_FAILED: Indicates that a reboot request has failed.
+        When `status` is `FALSE`, no restart is currently in progress.
+         - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED: Indicates that a restart request has failed.
 
-        When `status` is `TRUE`, it means the reboot could not be executed.
+        When `status` is `TRUE`, it means the restart could not be executed.
 
         Possible `reason` values:
         - `NoVMReference`: No VirtualMachine reference found.
-        - `VMIDeletionFailed`: The VirtualMachineInstance could not be deleted to trigger the reboot.
+        - `VMIDeletionFailed`: The VirtualMachineInstance could not be deleted to trigger the restart.
 
-        When `status` is `FALSE`, there is no reboot failure.
+        When `status` is `FALSE`, there is no restart failure.
       default: COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED
       enum:
       - COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED
@@ -2344,8 +2344,8 @@ components:
       - COMPUTE_INSTANCE_CONDITION_TYPE_READY
       - COMPUTE_INSTANCE_CONDITION_TYPE_FAILED
       - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED
-      - COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_IN_PROGRESS
-      - COMPUTE_INSTANCE_CONDITION_TYPE_REBOOT_FAILED
+      - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS
+      - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED
     v1ComputeInstanceSpec:
       type: object
       properties:
@@ -2401,15 +2401,15 @@ components:
         restart_requested_at:
           type: string
           description: |-
-            RestartRequestedAt is a timestamp signal to request a VM reboot.
+            RestartRequestedAt is a timestamp signal to request a VM restart.
 
-            Set this field to the current time (usually NOW) to request a reboot.
-            The controller will execute the reboot if this timestamp is greater than
+            Set this field to the current time (usually NOW) to request a restart.
+            The controller will execute the restart if this timestamp is greater than
             `status.last_restarted_at`.
 
             This is a declarative signal mechanism - the timestamp is a monotonically
             increasing value to detect new restart requests, not a scheduled time.
-            Typically set to the current time for immediate reboots.
+            Typically set to the current time for immediate restarts.
 
             External schedulers can set this field on a schedule to implement
             scheduled maintenance windows if needed.
@@ -2495,10 +2495,10 @@ components:
         last_restarted_at:
           type: string
           description: |-
-            LastRestartedAt records when the last reboot was initiated by the controller.
+            LastRestartedAt records when the last restart was initiated by the controller.
 
             This is set to `spec.restart_requested_at` when the controller processes a restart request.
-            It will be empty if no reboot has been performed yet.
+            It will be empty if no restart has been performed yet.
 
             Example (when converted to JSON):
 
