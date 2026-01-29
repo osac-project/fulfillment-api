@@ -2,6 +2,8 @@
 
 This project contains the definition of the fulfillment API.
 
+[Browse the API here](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/osac-project/fulfillment-api/refs/heads/main/openapi/v3/openapi.yaml)
+
 The API is specified using [Protocol Buffers](https://protobuf.dev) and [gRPC](https://grpc.io) definitions inside the
 [`proto`](proto/fulfillment/v1) directory. For example, the definition for the `Cluster` object that will be used to
 request the provisioning of a cluster is inside the
