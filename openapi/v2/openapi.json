@@ -2758,6 +2758,20 @@
             "type": "string"
           },
           "description": "Identifiers of the tenants that the object is assigned to."
+        },
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Labels contains key-value pairs for organizing and selecting objects.\n\nKeys consist of an optional prefix and a name separated by '/':\n\n- Prefix is a DNS subdomain (RFC 1035) and must be between 1 and 253 characters long.\n- Name must be between 1 and 63 characters long, start and end with an alphanumeric character, and contain only\n  letters (a-z), digits (0-9), '-' '_' or '.'.\n\nValues are optional; when present they must be between 0 and 63 characters long and follow the same character\nrules as names.\n\nLabels are indexed and searchable."
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/protobufAny"
+          },
+          "description": "Annotations contains arbitrary metadata for objects.\n\nKeys follow the same rules as label keys, including the optional DNS subdomain prefix and the 1-63 character name\nrestrictions. Values are arbitrary protocol buffer messages stored as Any objects. Annotations aren't indexed or\nsearchable."
         }
       },
       "description": "Metadata common to all kinds of objects."
