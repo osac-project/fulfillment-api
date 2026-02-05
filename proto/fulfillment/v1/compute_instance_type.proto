@@ -183,6 +183,9 @@ enum ComputeInstanceState {
 
   // Indicates that the compute instance is unusable.
   COMPUTE_INSTANCE_STATE_FAILED = 3;
+
+  // Indicates that the compute instance is being deleted.
+  COMPUTE_INSTANCE_STATE_DELETING = 4;
 }
 
 // Contains the details of a condition that describes the status of a compute instance.

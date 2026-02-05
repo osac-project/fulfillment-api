@@ -2076,10 +2076,11 @@
         "COMPUTE_INSTANCE_STATE_UNSPECIFIED",
         "COMPUTE_INSTANCE_STATE_PROGRESSING",
         "COMPUTE_INSTANCE_STATE_READY",
-        "COMPUTE_INSTANCE_STATE_FAILED"
+        "COMPUTE_INSTANCE_STATE_FAILED",
+        "COMPUTE_INSTANCE_STATE_DELETING"
       ],
       "default": "COMPUTE_INSTANCE_STATE_UNSPECIFIED",
-      "description": "Represents the overall state of a compute instance.\n\n - COMPUTE_INSTANCE_STATE_UNSPECIFIED: Unspecified indicates that the state is unknown.\n - COMPUTE_INSTANCE_STATE_PROGRESSING: Indicates that the compute instance isn't ready yet.\n - COMPUTE_INSTANCE_STATE_READY: Indicates that the compute instance is ready.\n - COMPUTE_INSTANCE_STATE_FAILED: Indicates that the compute instance is unusable."
+      "description": "Represents the overall state of a compute instance.\n\n - COMPUTE_INSTANCE_STATE_UNSPECIFIED: Unspecified indicates that the state is unknown.\n - COMPUTE_INSTANCE_STATE_PROGRESSING: Indicates that the compute instance isn't ready yet.\n - COMPUTE_INSTANCE_STATE_READY: Indicates that the compute instance is ready.\n - COMPUTE_INSTANCE_STATE_FAILED: Indicates that the compute instance is unusable.\n - COMPUTE_INSTANCE_STATE_DELETING: Indicates that the compute instance is being deleted."
     },
     "v1ComputeInstanceStatus": {
       "type": "object",

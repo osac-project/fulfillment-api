@@ -2432,12 +2432,14 @@ components:
          - COMPUTE_INSTANCE_STATE_PROGRESSING: Indicates that the compute instance isn't ready yet.
          - COMPUTE_INSTANCE_STATE_READY: Indicates that the compute instance is ready.
          - COMPUTE_INSTANCE_STATE_FAILED: Indicates that the compute instance is unusable.
+         - COMPUTE_INSTANCE_STATE_DELETING: Indicates that the compute instance is being deleted.
       default: COMPUTE_INSTANCE_STATE_UNSPECIFIED
       enum:
       - COMPUTE_INSTANCE_STATE_UNSPECIFIED
       - COMPUTE_INSTANCE_STATE_PROGRESSING
       - COMPUTE_INSTANCE_STATE_READY
       - COMPUTE_INSTANCE_STATE_FAILED
+      - COMPUTE_INSTANCE_STATE_DELETING
     v1ComputeInstanceStatus:
       type: object
       properties:
