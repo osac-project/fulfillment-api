@@ -3253,13 +3253,12 @@ components:
         annotations:
           type: object
           additionalProperties:
-            $ref: "#/components/schemas/protobufAny"
+            type: string
           description: |-
             Annotations contains arbitrary metadata for objects.
 
             Keys follow the same rules as label keys, including the optional DNS subdomain prefix and the 1-63 character name
-            restrictions. Values are arbitrary protocol buffer messages stored as Any objects. Annotations aren't indexed or
-            searchable.
+            restrictions. Values can be any string.
       description: Metadata common to all kinds of objects.
     v1MetadataGetResponse:
       type: object
