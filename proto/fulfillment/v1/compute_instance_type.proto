@@ -112,34 +112,27 @@ message ComputeInstanceStatus {
 
   // Contains a list of conditions that describe in detail the status of the compute instance.
   //
-  // For example, a compute instance that is ready could be represented like this (when converted to JSON):
+  // For example, a running compute instance could be represented like this (when converted to JSON):
   //
   //    {
   //      "id": "123",
   //      "spec": {
   //      },
   //      "status": {
-  //        "state": "COMPUTE_INSTANCE_STATE_READY",
+  //        "state": "COMPUTE_INSTANCE_STATE_RUNNING",
   //        "conditions": [
   //          {
-  //            "type": "COMPUTE_INSTANCE_CONDITION_TYPE_READY",
+  //            "type": "COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE",
   //            "status": "CONDITION_STATUS_TRUE",
   //            "last_transition_time": "2025-03-12 20:15:59+00:00",
-  //            "message": "The compute instance is ready to use",
-  //          },
-  //          {
-  //            "type": "COMPUTE_INSTANCE_CONDITION_TYPE_FAILED",
-  //            "status": "CONDITION_STATUS_FALSE",
-  //            "last_transition_time": "2025-03-12 20:10:59+00:00"
+  //            "message": "The compute instance is available",
   //          }
   //        ]
   //      }
   //    }
   //
-  // In this example the `READY` condition is true. That tells us that the compute instance is ready to use via the IP address
+  // In this example the `AVAILABLE` condition is true. That tells us that the compute instance is available via the IP address
   // provided in the `status.ip_address` field.
-  //
-  // The `FAILED` condition is false. That tells us that the compute instance is *not* failed.
   //
   // Note that in this example, to make it shorter, only one condition appears. In general all the conditions (except
   // `UNSPECIFIED`) will appear exactly once.
@@ -150,7 +143,7 @@ message ComputeInstanceStatus {
 
   // IP address of the compute instance.
   //
-  // This will be empty if the compute instance isn't ready.
+  // This will be empty if the compute instance isn't running.
   string ip_address = 3;
 
   // LastRestartedAt records when the last restart was initiated by the controller.
@@ -162,7 +155,7 @@ message ComputeInstanceStatus {
   //
   //    {
   //      "status": {
-  //        "state": "COMPUTE_INSTANCE_STATE_READY",
+  //        "state": "COMPUTE_INSTANCE_STATE_RUNNING",
   //        "last_restarted_at": "2026-01-20T14:30:00Z"
   //      }
   //    }
@@ -175,11 +168,11 @@ enum ComputeInstanceState {
   // Unspecified indicates that the state is unknown.
   COMPUTE_INSTANCE_STATE_UNSPECIFIED = 0;
 
-  // Indicates that the compute instance isn't ready yet.
-  COMPUTE_INSTANCE_STATE_PROGRESSING = 1;
+  // Indicates that the compute instance is starting.
+  COMPUTE_INSTANCE_STATE_STARTING = 1;
 
-  // Indicates that the compute instance is ready.
-  COMPUTE_INSTANCE_STATE_READY = 2;
+  // Indicates that the compute instance is running.
+  COMPUTE_INSTANCE_STATE_RUNNING = 2;
 
   // Indicates that the compute instance is unusable.
   COMPUTE_INSTANCE_STATE_FAILED = 3;
@@ -222,10 +215,10 @@ enum ComputeInstanceConditionType {
   // Currently there are no `reason` values defined.
   COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING = 1;
 
-  // Indicates that the compute instance is ready to use.
+  // Indicates that the compute instance is available.
   //
   // Currently there are no `reason` values defined.
-  COMPUTE_INSTANCE_CONDITION_TYPE_READY = 2;
+  COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE = 2;
 
   // Indicates that the compute instance is unusable.
   //
