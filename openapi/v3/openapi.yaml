@@ -2312,7 +2312,7 @@ components:
          - COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING: Indicates that the compute instance isn't completely ready yet.
 
         Currently there are no `reason` values defined.
-         - COMPUTE_INSTANCE_CONDITION_TYPE_READY: Indicates that the compute instance is ready to use.
+         - COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE: Indicates that the compute instance is available.
 
         Currently there are no `reason` values defined.
          - COMPUTE_INSTANCE_CONDITION_TYPE_FAILED: Indicates that the compute instance is unusable.
@@ -2339,7 +2339,7 @@ components:
       enum:
       - COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED
       - COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING
-      - COMPUTE_INSTANCE_CONDITION_TYPE_READY
+      - COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE
       - COMPUTE_INSTANCE_CONDITION_TYPE_FAILED
       - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED
       - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS
@@ -2429,15 +2429,15 @@ components:
         Represents the overall state of a compute instance.
 
          - COMPUTE_INSTANCE_STATE_UNSPECIFIED: Unspecified indicates that the state is unknown.
-         - COMPUTE_INSTANCE_STATE_PROGRESSING: Indicates that the compute instance isn't ready yet.
-         - COMPUTE_INSTANCE_STATE_READY: Indicates that the compute instance is ready.
+         - COMPUTE_INSTANCE_STATE_STARTING: Indicates that the compute instance is starting.
+         - COMPUTE_INSTANCE_STATE_RUNNING: Indicates that the compute instance is running.
          - COMPUTE_INSTANCE_STATE_FAILED: Indicates that the compute instance is unusable.
          - COMPUTE_INSTANCE_STATE_DELETING: Indicates that the compute instance is being deleted.
       default: COMPUTE_INSTANCE_STATE_UNSPECIFIED
       enum:
       - COMPUTE_INSTANCE_STATE_UNSPECIFIED
-      - COMPUTE_INSTANCE_STATE_PROGRESSING
-      - COMPUTE_INSTANCE_STATE_READY
+      - COMPUTE_INSTANCE_STATE_STARTING
+      - COMPUTE_INSTANCE_STATE_RUNNING
       - COMPUTE_INSTANCE_STATE_FAILED
       - COMPUTE_INSTANCE_STATE_DELETING
     v1ComputeInstanceStatus:
@@ -2450,34 +2450,27 @@ components:
           description: |-
             Contains a list of conditions that describe in detail the status of the compute instance.
 
-            For example, a compute instance that is ready could be represented like this (when converted to JSON):
+            For example, a running compute instance could be represented like this (when converted to JSON):
 
                {
                  "id": "123",
                  "spec": {
                  },
                  "status": {
-                   "state": "COMPUTE_INSTANCE_STATE_READY",
+                   "state": "COMPUTE_INSTANCE_STATE_RUNNING",
                    "conditions": [
                      {
-                       "type": "COMPUTE_INSTANCE_CONDITION_TYPE_READY",
+                       "type": "COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE",
                        "status": "CONDITION_STATUS_TRUE",
                        "last_transition_time": "2025-03-12 20:15:59+00:00",
-                       "message": "The compute instance is ready to use",
-                     },
-                     {
-                       "type": "COMPUTE_INSTANCE_CONDITION_TYPE_FAILED",
-                       "status": "CONDITION_STATUS_FALSE",
-                       "last_transition_time": "2025-03-12 20:10:59+00:00"
+                       "message": "The compute instance is available",
                      }
                    ]
                  }
                }
 
-            In this example the `READY` condition is true. That tells us that the compute instance is ready to use via the IP address
+            In this example the `AVAILABLE` condition is true. That tells us that the compute instance is available via the IP address
             provided in the `status.ip_address` field.
-
-            The `FAILED` condition is false. That tells us that the compute instance is *not* failed.
 
             Note that in this example, to make it shorter, only one condition appears. In general all the conditions (except
             `UNSPECIFIED`) will appear exactly once.
@@ -2491,7 +2484,7 @@ components:
           description: |-
             IP address of the compute instance.
 
-            This will be empty if the compute instance isn't ready.
+            This will be empty if the compute instance isn't running.
         last_restarted_at:
           type: string
           description: |-
@@ -2504,7 +2497,7 @@ components:
 
                {
                  "status": {
-                   "state": "COMPUTE_INSTANCE_STATE_READY",
+                   "state": "COMPUTE_INSTANCE_STATE_RUNNING",
                    "last_restarted_at": "2026-01-20T14:30:00Z"
                  }
                }

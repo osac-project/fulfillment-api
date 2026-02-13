@@ -2039,14 +2039,14 @@
       "enum": [
         "COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED",
         "COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING",
-        "COMPUTE_INSTANCE_CONDITION_TYPE_READY",
+        "COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE",
         "COMPUTE_INSTANCE_CONDITION_TYPE_FAILED",
         "COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED",
         "COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS",
         "COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED"
       ],
       "default": "COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED",
-      "description": "Types of conditions used to describe the status of compute instance.\n\n - COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED: Unspecified indicates that the condition is unknown.\n\nThis will never be appear in the `spec.conditions` field of a compute instance.\n - COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING: Indicates that the compute instance isn't completely ready yet.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_READY: Indicates that the compute instance is ready to use.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_FAILED: Indicates that the compute instance is unusable.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED: Indicates that the compute instance is degraded.\n - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS: Indicates that a restart is in progress.\n\nWhen `status` is `TRUE`, it means a restart is currently in progress.\n\nPossible `reason` values:\n- `RestartRequested`: A restart has been requested via `spec.restart_requested_at`.\n- `RestartInProgress`: The restart has been initiated.\n\nWhen `status` is `FALSE`, no restart is currently in progress.\n - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED: Indicates that a restart request has failed.\n\nWhen `status` is `TRUE`, it means the restart could not be executed.\nThe `message` field will contain details about the failure.\nIf the issue persists, please contact your administrator.\n\nWhen `status` is `FALSE`, there is no restart failure."
+      "description": "Types of conditions used to describe the status of compute instance.\n\n - COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED: Unspecified indicates that the condition is unknown.\n\nThis will never be appear in the `spec.conditions` field of a compute instance.\n - COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING: Indicates that the compute instance isn't completely ready yet.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE: Indicates that the compute instance is available.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_FAILED: Indicates that the compute instance is unusable.\n\nCurrently there are no `reason` values defined.\n - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED: Indicates that the compute instance is degraded.\n - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS: Indicates that a restart is in progress.\n\nWhen `status` is `TRUE`, it means a restart is currently in progress.\n\nPossible `reason` values:\n- `RestartRequested`: A restart has been requested via `spec.restart_requested_at`.\n- `RestartInProgress`: The restart has been initiated.\n\nWhen `status` is `FALSE`, no restart is currently in progress.\n - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED: Indicates that a restart request has failed.\n\nWhen `status` is `TRUE`, it means the restart could not be executed.\nThe `message` field will contain details about the failure.\nIf the issue persists, please contact your administrator.\n\nWhen `status` is `FALSE`, there is no restart failure."
     },
     "v1ComputeInstanceSpec": {
       "type": "object",
@@ -2074,13 +2074,13 @@
       "type": "string",
       "enum": [
         "COMPUTE_INSTANCE_STATE_UNSPECIFIED",
-        "COMPUTE_INSTANCE_STATE_PROGRESSING",
-        "COMPUTE_INSTANCE_STATE_READY",
+        "COMPUTE_INSTANCE_STATE_STARTING",
+        "COMPUTE_INSTANCE_STATE_RUNNING",
         "COMPUTE_INSTANCE_STATE_FAILED",
         "COMPUTE_INSTANCE_STATE_DELETING"
       ],
       "default": "COMPUTE_INSTANCE_STATE_UNSPECIFIED",
-      "description": "Represents the overall state of a compute instance.\n\n - COMPUTE_INSTANCE_STATE_UNSPECIFIED: Unspecified indicates that the state is unknown.\n - COMPUTE_INSTANCE_STATE_PROGRESSING: Indicates that the compute instance isn't ready yet.\n - COMPUTE_INSTANCE_STATE_READY: Indicates that the compute instance is ready.\n - COMPUTE_INSTANCE_STATE_FAILED: Indicates that the compute instance is unusable.\n - COMPUTE_INSTANCE_STATE_DELETING: Indicates that the compute instance is being deleted."
+      "description": "Represents the overall state of a compute instance.\n\n - COMPUTE_INSTANCE_STATE_UNSPECIFIED: Unspecified indicates that the state is unknown.\n - COMPUTE_INSTANCE_STATE_STARTING: Indicates that the compute instance is starting.\n - COMPUTE_INSTANCE_STATE_RUNNING: Indicates that the compute instance is running.\n - COMPUTE_INSTANCE_STATE_FAILED: Indicates that the compute instance is unusable.\n - COMPUTE_INSTANCE_STATE_DELETING: Indicates that the compute instance is being deleted."
     },
     "v1ComputeInstanceStatus": {
       "type": "object",
@@ -2095,16 +2095,16 @@
             "type": "object",
             "$ref": "#/definitions/v1ComputeInstanceCondition"
           },
-          "description": "Contains a list of conditions that describe in detail the status of the compute instance.\n\nFor example, a compute instance that is ready could be represented like this (when converted to JSON):\n\n   {\n     \"id\": \"123\",\n     \"spec\": {\n     },\n     \"status\": {\n       \"state\": \"COMPUTE_INSTANCE_STATE_READY\",\n       \"conditions\": [\n         {\n           \"type\": \"COMPUTE_INSTANCE_CONDITION_TYPE_READY\",\n           \"status\": \"CONDITION_STATUS_TRUE\",\n           \"last_transition_time\": \"2025-03-12 20:15:59+00:00\",\n           \"message\": \"The compute instance is ready to use\",\n         },\n         {\n           \"type\": \"COMPUTE_INSTANCE_CONDITION_TYPE_FAILED\",\n           \"status\": \"CONDITION_STATUS_FALSE\",\n           \"last_transition_time\": \"2025-03-12 20:10:59+00:00\"\n         }\n       ]\n     }\n   }\n\nIn this example the `READY` condition is true. That tells us that the compute instance is ready to use via the IP address\nprovided in the `status.ip_address` field.\n\nThe `FAILED` condition is false. That tells us that the compute instance is *not* failed.\n\nNote that in this example, to make it shorter, only one condition appears. In general all the conditions (except\n`UNSPECIFIED`) will appear exactly once.\n\nCheck the documentation of the values of the `ComputeInstanceConditionType` enumerated type to see possible conditions and\nreasons."
+          "description": "Contains a list of conditions that describe in detail the status of the compute instance.\n\nFor example, a running compute instance could be represented like this (when converted to JSON):\n\n   {\n     \"id\": \"123\",\n     \"spec\": {\n     },\n     \"status\": {\n       \"state\": \"COMPUTE_INSTANCE_STATE_RUNNING\",\n       \"conditions\": [\n         {\n           \"type\": \"COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE\",\n           \"status\": \"CONDITION_STATUS_TRUE\",\n           \"last_transition_time\": \"2025-03-12 20:15:59+00:00\",\n           \"message\": \"The compute instance is available\",\n         }\n       ]\n     }\n   }\n\nIn this example the `AVAILABLE` condition is true. That tells us that the compute instance is available via the IP address\nprovided in the `status.ip_address` field.\n\nNote that in this example, to make it shorter, only one condition appears. In general all the conditions (except\n`UNSPECIFIED`) will appear exactly once.\n\nCheck the documentation of the values of the `ComputeInstanceConditionType` enumerated type to see possible conditions and\nreasons."
         },
         "ip_address": {
           "type": "string",
-          "description": "IP address of the compute instance.\n\nThis will be empty if the compute instance isn't ready."
+          "description": "IP address of the compute instance.\n\nThis will be empty if the compute instance isn't running."
         },
         "last_restarted_at": {
           "type": "string",
           "format": "date-time",
-          "description": "LastRestartedAt records when the last restart was initiated by the controller.\n\nThis is set to `spec.restart_requested_at` when the controller processes a restart request.\nIt will be empty if no restart has been performed yet.\n\nExample (when converted to JSON):\n\n   {\n     \"status\": {\n       \"state\": \"COMPUTE_INSTANCE_STATE_READY\",\n       \"last_restarted_at\": \"2026-01-20T14:30:00Z\"\n     }\n   }"
+          "description": "LastRestartedAt records when the last restart was initiated by the controller.\n\nThis is set to `spec.restart_requested_at` when the controller processes a restart request.\nIt will be empty if no restart has been performed yet.\n\nExample (when converted to JSON):\n\n   {\n     \"status\": {\n       \"state\": \"COMPUTE_INSTANCE_STATE_RUNNING\",\n       \"last_restarted_at\": \"2026-01-20T14:30:00Z\"\n     }\n   }"
         }
       },
       "description": "The status contains the details of the compute instance provided by the system."
