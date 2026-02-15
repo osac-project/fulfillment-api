@@ -38,6 +38,18 @@
       "name": "Hosts"
     },
     {
+      "name": "NetworkClasses"
+    },
+    {
+      "name": "SecurityGroups"
+    },
+    {
+      "name": "Subnets"
+    },
+    {
+      "name": "VirtualNetworks"
+    },
+    {
       "name": "Metadata"
     }
   ],
@@ -1581,6 +1593,829 @@
           "Hosts"
         ]
       }
+    },
+    "/api/fulfillment/v1/network_classes": {
+      "get": {
+        "summary": "Retrieves the list of network classes.",
+        "operationId": "NetworkClasses_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1NetworkClassesListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "offset",
+            "description": "Index of the first result. If not specified the default value will be zero.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "description": "Maximum number of results to be returned by the server. When not specified all the results will be returned. Note\nthat there may not be enough results to return, and that the server may decide, for performance reasons, to return\nless results than requested.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "Filter criteria.\n\nThe syntax of this parameter is similar to the syntax of the _where_ clause of a SQL statement, but using the names\nof the attributes of the network class instead of the names of the columns of a table. For example, in order to\nretrieve all the network classes with an implementation_strategy of `udn-net` the value should be:\n\n    implementation_strategy = 'udn-net'\n\nOr to retrieve network classes with titles starting with `physical`:\n\n    title like 'physical%'\n\nIf this isn't provided, or if the value is empty, then all the network classes that the user has permission to see\nwill be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "description": "Order criteria.\n\nThe syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the\nnames of the attributes of the network class instead of the names of the columns of a table. For example, in order to\nsort the network classes descending by title the value should be:\n\n    title desc\n\nIf the parameter isn't provided, or if the value is empty, then the order of the results is undefined.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "NetworkClasses"
+        ]
+      },
+      "post": {
+        "summary": "Creates a new network class.",
+        "description": "This method isn't allowed for regular users, only for the system itself.",
+        "operationId": "NetworkClasses_Create",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1NetworkClass"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "object",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1NetworkClass"
+            }
+          }
+        ],
+        "tags": [
+          "NetworkClasses"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/network_classes/{id}": {
+      "get": {
+        "summary": "Retrieves the details of one specific network class.",
+        "operationId": "NetworkClasses_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1NetworkClass"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "NetworkClasses"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes a network class.",
+        "description": "This method isn't allowed for regular users, only for the system itself.",
+        "operationId": "NetworkClasses_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1NetworkClassesDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "NetworkClasses"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/network_classes/{object.id}": {
+      "patch": {
+        "summary": "Updates an existing network class.",
+        "description": "This method isn't allowed for regular users, only for the system itself.",
+        "operationId": "NetworkClasses_Update",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1NetworkClass"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "object.id",
+            "description": "Unique identifier of the network class.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "object",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "metadata": {
+                  "$ref": "#/definitions/v1Metadata",
+                  "description": "Metadata of the network class."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Human friendly short description of the network class, only a few words, suitable for displaying in one single\nline on a UI or CLI. For example: \"UDN Network\" or \"Physical Network\"."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Human friendly long description of the network class, using Markdown format. This should explain the\ncharacteristics of networks created using this class, including performance characteristics, isolation\nguarantees, and any limitations or requirements."
+                },
+                "implementation_strategy": {
+                  "type": "string",
+                  "description": "Implementation strategy identifier for this network class. This is the discriminator that VirtualNetwork\nresources use to select which network backend to use. For example: \"udn-net\", \"phys-net\", \"ovn-kubernetes\".\n\nThis value is system-defined and immutable once the NetworkClass is created."
+                },
+                "constraints": {
+                  "$ref": "#/definitions/v1NetworkClassConstraints",
+                  "description": "Class-specific configuration constraints and options. These define implementation-specific parameters that\nnetworks using this class must or may configure."
+                },
+                "capabilities": {
+                  "$ref": "#/definitions/v1NetworkClassCapabilities",
+                  "description": "Capabilities that this network class supports. These describe what features are available when using this\nnetwork implementation strategy."
+                },
+                "status": {
+                  "$ref": "#/definitions/v1NetworkClassStatus",
+                  "description": "Current operational status of the network class."
+                }
+              },
+              "description": "Describes a network implementation strategy available for creating virtual networks.\n\nNetworkClass represents a specific network backend implementation that VirtualNetworks can use. For example,\nthere could be a network class `udn-net` to describe networks implemented using User-Defined Networks in\nKubernetes, and another `phys-net` for networks backed by physical network infrastructure.\n\nThis is similar to the _storage class_ concept used by Kubernetes for persistent volumes, or the _instance type_\nconcept used by cloud providers for compute resources.\n\nUsers query available NetworkClasses to discover which network implementation strategies they can choose when\ncreating VirtualNetworks. The `implementation_strategy` field is the key identifier that VirtualNetwork resources\nreference to select their network backend."
+            }
+          }
+        ],
+        "tags": [
+          "NetworkClasses"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/security_groups": {
+      "get": {
+        "summary": "Retrieves the list of security groups.",
+        "operationId": "SecurityGroups_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SecurityGroupsListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "offset",
+            "description": "Index of the first result. If not specified the default value will be zero.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "description": "Maximum number of results to be returned by the server. When not specified all the results will be returned. Note\nthat there may not be enough results to return, and that the server may decide, for performance reasons, to return\nless results than requested.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "Filter criteria.\n\nThe syntax of this parameter is similar to the syntax of the _where_ clause of a SQL statement, but using the names\nof the attributes of the security group instead of the names of the columns of a table. For example, in order to\nretrieve all the security groups with a virtual_network of `vnet-123` the value should be:\n\n    virtual_network = 'vnet-123'\n\nOr to retrieve security groups with names starting with `web-servers`:\n\n    metadata.name like 'web-servers%'\n\nIf this isn't provided, or if the value is empty, then all the security groups that the user has permission to see\nwill be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "description": "Order criteria.\n\nThe syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the\nnames of the attributes of the security group instead of the names of the columns of a table. For example, in order to\nsort the security groups descending by creation time the value should be:\n\n    metadata.created_at desc\n\nIf the parameter isn't provided, or if the value is empty, then the order of the results is undefined.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SecurityGroups"
+        ]
+      },
+      "post": {
+        "summary": "Creates a new security group.",
+        "operationId": "SecurityGroups_Create",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1SecurityGroup"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "object",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SecurityGroup"
+            }
+          }
+        ],
+        "tags": [
+          "SecurityGroups"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/security_groups/{id}": {
+      "get": {
+        "summary": "Retrieves the details of one specific security group.",
+        "operationId": "SecurityGroups_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1SecurityGroup"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SecurityGroups"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes a security group.",
+        "operationId": "SecurityGroups_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SecurityGroupsDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "SecurityGroups"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/security_groups/{object.id}": {
+      "patch": {
+        "summary": "Updates an existing security group.",
+        "operationId": "SecurityGroups_Update",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1SecurityGroup"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "object.id",
+            "description": "Unique identifier of the security group.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "object",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "metadata": {
+                  "$ref": "#/definitions/v1Metadata",
+                  "description": "Metadata of the security group, including name, labels, tenants, and timestamps.\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the\n'osac.io/owner-reference' key with the VirtualNetwork ID as the value. This establishes resource\nhierarchy for garbage collection."
+                },
+                "spec": {
+                  "$ref": "#/definitions/v1SecurityGroupSpec",
+                  "description": "Desired configuration of the security group (user-modifiable)."
+                },
+                "status": {
+                  "$ref": "#/definitions/v1SecurityGroupStatus",
+                  "description": "Current state of the security group (system-provided, read-only)."
+                }
+              },
+              "description": "Represents a virtual firewall controlling network traffic for compute instances.\n\nSecurityGroup acts as a stateful firewall that controls inbound (ingress) and outbound (egress) traffic for\ncompute instances within a VirtualNetwork. Rules are stateful, meaning return traffic is automatically allowed\nfor established connections.\n\nSecurityGroups follow a default-deny policy: if no rules match, traffic is blocked. This ensures secure-by-default\nbehavior where only explicitly allowed traffic can pass through.\n\nSecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that\nnetwork. They cannot be used across different VirtualNetworks.\n\nThe parent VirtualNetwork relationship is established via metadata.annotations using the 'osac.io/owner-reference'\nkey with the VirtualNetwork ID as the value. This enables proper resource hierarchy for garbage collection - when\na VirtualNetwork is deleted, all associated SecurityGroups are automatically cleaned up.\n\nDesign follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native\nmulti-tenant environments."
+            }
+          }
+        ],
+        "tags": [
+          "SecurityGroups"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/subnets": {
+      "get": {
+        "summary": "Retrieves the list of subnets.",
+        "operationId": "Subnets_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SubnetsListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "offset",
+            "description": "Index of the first result. If not specified the default value will be zero.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "description": "Maximum number of results to be returned by the server. When not specified all the results will be returned. Note\nthat there may not be enough results to return, and that the server may decide, for performance reasons, to return\nless results than requested.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "Filter criteria.\n\nThe syntax of this parameter is similar to the syntax of the _where_ clause of a SQL statement, but using the names\nof the attributes of the subnet instead of the names of the columns of a table. For example, in order to\nretrieve all the subnets with a specific virtual network the value should be:\n\n    virtual_network = 'vn-123'\n\nOr to retrieve subnets with names starting with `frontend`:\n\n    metadata.name like 'frontend-%'\n\nIf this isn't provided, or if the value is empty, then all the subnets that the user has permission to see\nwill be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "description": "Order criteria.\n\nThe syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the\nnames of the attributes of the subnet instead of the names of the columns of a table. For example, in order to\nsort the subnets descending by creation time the value should be:\n\n    metadata.created_at desc\n\nIf the parameter isn't provided, or if the value is empty, then the order of the results is undefined.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Subnets"
+        ]
+      },
+      "post": {
+        "summary": "Creates a new subnet.",
+        "operationId": "Subnets_Create",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Subnet"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "object",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1Subnet"
+            }
+          }
+        ],
+        "tags": [
+          "Subnets"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/subnets/{id}": {
+      "get": {
+        "summary": "Retrieves the details of one specific subnet.",
+        "operationId": "Subnets_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Subnet"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Subnets"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes a subnet.",
+        "operationId": "Subnets_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SubnetsDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Subnets"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/subnets/{object.id}": {
+      "patch": {
+        "summary": "Updates an existing subnet.",
+        "operationId": "Subnets_Update",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1Subnet"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "object.id",
+            "description": "Unique identifier of the subnet.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "object",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "metadata": {
+                  "$ref": "#/definitions/v1Metadata",
+                  "description": "Metadata of the subnet, including name, labels, tenants, and timestamps.\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the\n'osac.io/owner-reference' key with the VirtualNetwork ID as the value. This establishes resource\nhierarchy for garbage collection."
+                },
+                "spec": {
+                  "$ref": "#/definitions/v1SubnetSpec",
+                  "description": "Desired configuration of the subnet (user-modifiable)."
+                },
+                "status": {
+                  "$ref": "#/definitions/v1SubnetStatus",
+                  "description": "Current state of the subnet (system-provided, read-only)."
+                }
+              },
+              "description": "Represents a subdivision of a VirtualNetwork for organizing compute instances.\n\nSubnets subdivide VirtualNetwork IP address space into smaller, manageable segments. Each Subnet belongs to exactly\none parent VirtualNetwork and must be in the same region. Initially, the system supports a 1:1 mapping between\nVirtualNetwork and Subnet (one subnet per network), but the schema is designed to support multiple subnets per\nVirtualNetwork in the future.\n\nSubnets support flexible IP addressing to match the parent VirtualNetwork's capabilities:\n- IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty\n- IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty\n- Dual-stack: Set both ipv4_cidr and ipv6_cidr\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the 'osac.io/owner-reference'\nkey with the VirtualNetwork ID as the value. This establishes resource hierarchy for garbage collection, ensuring\nthat Subnets are automatically cleaned up when their parent VirtualNetwork is deleted.\n\nCIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the\nparent VirtualNetwork's CIDR. Validation is enforced at the service layer."
+            }
+          }
+        ],
+        "tags": [
+          "Subnets"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/virtual_networks": {
+      "get": {
+        "summary": "Retrieves the list of virtual networks.",
+        "operationId": "VirtualNetworks_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VirtualNetworksListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "offset",
+            "description": "Index of the first result. If not specified the default value will be zero.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "limit",
+            "description": "Maximum number of results to be returned by the server. When not specified all the results will be returned. Note\nthat there may not be enough results to return, and that the server may decide, for performance reasons, to return\nless results than requested.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "filter",
+            "description": "Filter criteria.\n\nThe syntax of this parameter is similar to the syntax of the _where_ clause of a SQL statement, but using the names\nof the attributes of the virtual network instead of the names of the columns of a table. For example, in order to\nretrieve all the virtual networks with a region of `us-east-1` the value should be:\n\n    region = 'us-east-1'\n\nOr to retrieve virtual networks with names starting with `prod`:\n\n    metadata.name like 'prod-%'\n\nIf this isn't provided, or if the value is empty, then all the virtual networks that the user has permission to see\nwill be returned.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "description": "Order criteria.\n\nThe syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the\nnames of the attributes of the virtual network instead of the names of the columns of a table. For example, in order to\nsort the virtual networks descending by creation time the value should be:\n\n    metadata.created_at desc\n\nIf the parameter isn't provided, or if the value is empty, then the order of the results is undefined.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VirtualNetworks"
+        ]
+      },
+      "post": {
+        "summary": "Creates a new virtual network.",
+        "operationId": "VirtualNetworks_Create",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1VirtualNetwork"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "object",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1VirtualNetwork"
+            }
+          }
+        ],
+        "tags": [
+          "VirtualNetworks"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/virtual_networks/{id}": {
+      "get": {
+        "summary": "Retrieves the details of one specific virtual network.",
+        "operationId": "VirtualNetworks_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1VirtualNetwork"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VirtualNetworks"
+        ]
+      },
+      "delete": {
+        "summary": "Deletes a virtual network.",
+        "operationId": "VirtualNetworks_Delete",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VirtualNetworksDeleteResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "VirtualNetworks"
+        ]
+      }
+    },
+    "/api/fulfillment/v1/virtual_networks/{object.id}": {
+      "patch": {
+        "summary": "Updates an existing virtual network.",
+        "operationId": "VirtualNetworks_Update",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/v1VirtualNetwork"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "object.id",
+            "description": "Unique identifier of the virtual network.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "object",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "metadata": {
+                  "$ref": "#/definitions/v1Metadata",
+                  "description": "Metadata of the virtual network, including name, labels, tenants, and timestamps."
+                },
+                "spec": {
+                  "$ref": "#/definitions/v1VirtualNetworkSpec",
+                  "description": "Desired configuration of the virtual network (user-modifiable)."
+                },
+                "status": {
+                  "$ref": "#/definitions/v1VirtualNetworkStatus",
+                  "description": "Current state of the virtual network (system-provided, read-only)."
+                }
+              },
+              "description": "Represents a tenant-isolated virtual network.\n\nVirtualNetwork provides network isolation for compute instances within a region. Each VirtualNetwork is backed\nby a specific NetworkClass implementation strategy (e.g., \"udn-net\" for User-Defined Networks, \"phys-net\" for\nphysical network infrastructure).\n\nVirtualNetworks support flexible IP addressing:\n- IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty\n- IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty\n- Dual-stack: Set both ipv4_cidr and ipv6_cidr\n\nThe selected NetworkClass must support the requested IP addressing mode via its capabilities.\n\nTenant isolation is enforced via the standard shared.v1.Metadata tenants field. VirtualNetworks are scoped to\na single region and cannot span multiple regions."
+            }
+          }
+        ],
+        "tags": [
+          "VirtualNetworks"
+        ]
+      }
     }
   },
   "definitions": {
@@ -2782,6 +3617,560 @@
       "properties": {
         "authn": {
           "$ref": "#/definitions/v1Authn"
+        }
+      }
+    },
+    "v1NetworkClass": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the network class."
+        },
+        "metadata": {
+          "$ref": "#/definitions/v1Metadata",
+          "description": "Metadata of the network class."
+        },
+        "title": {
+          "type": "string",
+          "description": "Human friendly short description of the network class, only a few words, suitable for displaying in one single\nline on a UI or CLI. For example: \"UDN Network\" or \"Physical Network\"."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human friendly long description of the network class, using Markdown format. This should explain the\ncharacteristics of networks created using this class, including performance characteristics, isolation\nguarantees, and any limitations or requirements."
+        },
+        "implementation_strategy": {
+          "type": "string",
+          "description": "Implementation strategy identifier for this network class. This is the discriminator that VirtualNetwork\nresources use to select which network backend to use. For example: \"udn-net\", \"phys-net\", \"ovn-kubernetes\".\n\nThis value is system-defined and immutable once the NetworkClass is created."
+        },
+        "constraints": {
+          "$ref": "#/definitions/v1NetworkClassConstraints",
+          "description": "Class-specific configuration constraints and options. These define implementation-specific parameters that\nnetworks using this class must or may configure."
+        },
+        "capabilities": {
+          "$ref": "#/definitions/v1NetworkClassCapabilities",
+          "description": "Capabilities that this network class supports. These describe what features are available when using this\nnetwork implementation strategy."
+        },
+        "status": {
+          "$ref": "#/definitions/v1NetworkClassStatus",
+          "description": "Current operational status of the network class."
+        }
+      },
+      "description": "Describes a network implementation strategy available for creating virtual networks.\n\nNetworkClass represents a specific network backend implementation that VirtualNetworks can use. For example,\nthere could be a network class `udn-net` to describe networks implemented using User-Defined Networks in\nKubernetes, and another `phys-net` for networks backed by physical network infrastructure.\n\nThis is similar to the _storage class_ concept used by Kubernetes for persistent volumes, or the _instance type_\nconcept used by cloud providers for compute resources.\n\nUsers query available NetworkClasses to discover which network implementation strategies they can choose when\ncreating VirtualNetworks. The `implementation_strategy` field is the key identifier that VirtualNetwork resources\nreference to select their network backend."
+    },
+    "v1NetworkClassCapabilities": {
+      "type": "object",
+      "properties": {
+        "supports_ipv4": {
+          "type": "boolean",
+          "description": "Whether this network class supports IPv4 addressing."
+        },
+        "supports_ipv6": {
+          "type": "boolean",
+          "description": "Whether this network class supports IPv6 addressing."
+        },
+        "supports_dual_stack": {
+          "type": "boolean",
+          "description": "Whether this network class supports dual-stack (IPv4 + IPv6) configuration."
+        }
+      },
+      "description": "Describes the capabilities supported by a NetworkClass.\n\nThese fields indicate what network features are available when using this class for VirtualNetwork creation."
+    },
+    "v1NetworkClassConstraints": {
+      "type": "object",
+      "description": "Defines configuration constraints for a specific NetworkClass implementation.\n\nThis message contains implementation-specific parameters that may be required or optional when creating\nVirtualNetworks using this class. Currently minimal to allow for future extension.\n\nReserved for future implementation-specific constraint fields.\n Examples might include: required VLAN ranges, MTU constraints, required subnet sizes, etc."
+    },
+    "v1NetworkClassState": {
+      "type": "string",
+      "enum": [
+        "NETWORK_CLASS_STATE_UNSPECIFIED",
+        "NETWORK_CLASS_STATE_PENDING",
+        "NETWORK_CLASS_STATE_READY",
+        "NETWORK_CLASS_STATE_FAILED"
+      ],
+      "default": "NETWORK_CLASS_STATE_UNSPECIFIED",
+      "description": "Lifecycle states for NetworkClass resources.\n\n - NETWORK_CLASS_STATE_UNSPECIFIED: State is unknown or has not been determined yet.\n - NETWORK_CLASS_STATE_PENDING: The network class is being initialized and is not yet ready for use.\n - NETWORK_CLASS_STATE_READY: The network class is fully operational and available for creating VirtualNetworks.\n - NETWORK_CLASS_STATE_FAILED: The network class has encountered an error and cannot be used for creating VirtualNetworks."
+    },
+    "v1NetworkClassStatus": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "#/definitions/v1NetworkClassState",
+          "description": "Current lifecycle state of the network class."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable message providing additional details about the current state. For example, if the state is\nFAILED, this message might explain what went wrong."
+        }
+      },
+      "description": "Represents the current operational state of a NetworkClass."
+    },
+    "v1NetworkClassesCreateResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1NetworkClass"
+        }
+      }
+    },
+    "v1NetworkClassesDeleteResponse": {
+      "type": "object"
+    },
+    "v1NetworkClassesGetResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1NetworkClass"
+        }
+      }
+    },
+    "v1NetworkClassesListResponse": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter\nof the request if there are not enough items, or if the system decides that returning that number of items isn't\nfeasible or convenient for performance reasons."
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Total number of items of the collection that match the search criteria, regardless of the number of results\nrequested with the `limit` parameter."
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1NetworkClass"
+          },
+          "description": "List of results."
+        }
+      }
+    },
+    "v1NetworkClassesUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1NetworkClass"
+        }
+      }
+    },
+    "v1Protocol": {
+      "type": "string",
+      "enum": [
+        "PROTOCOL_UNSPECIFIED",
+        "PROTOCOL_TCP",
+        "PROTOCOL_UDP",
+        "PROTOCOL_ICMP",
+        "PROTOCOL_ALL"
+      ],
+      "default": "PROTOCOL_UNSPECIFIED",
+      "description": "Network protocol types for SecurityRule matching.\n\nDetermines which layer 4 protocol the rule applies to. Protocol affects whether port range fields are\napplicable (TCP/UDP) or ignored (ICMP/ALL).\n\n - PROTOCOL_UNSPECIFIED: Unknown protocol (invalid). This should never be used in actual rules.\n - PROTOCOL_TCP: TCP protocol. Port ranges (port_from, port_to) are required for TCP rules.\n\nUsed for connection-oriented protocols like HTTP, HTTPS, SSH, database connections, etc.\n - PROTOCOL_UDP: UDP protocol. Port ranges (port_from, port_to) are required for UDP rules.\n\nUsed for connectionless protocols like DNS, NTP, DHCP, VoIP, etc.\n - PROTOCOL_ICMP: ICMP protocol (ping and other control messages). Port ranges are not applicable.\n\nUsed for network diagnostics (ping), error reporting, and control messages.\n - PROTOCOL_ALL: All protocols (wildcard). Port ranges are not applicable.\n\nMatches any protocol. Useful for allowing all traffic from a trusted CIDR block or for egress rules\nthat permit all outbound traffic."
+    },
+    "v1SecurityGroup": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the security group."
+        },
+        "metadata": {
+          "$ref": "#/definitions/v1Metadata",
+          "description": "Metadata of the security group, including name, labels, tenants, and timestamps.\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the\n'osac.io/owner-reference' key with the VirtualNetwork ID as the value. This establishes resource\nhierarchy for garbage collection."
+        },
+        "spec": {
+          "$ref": "#/definitions/v1SecurityGroupSpec",
+          "description": "Desired configuration of the security group (user-modifiable)."
+        },
+        "status": {
+          "$ref": "#/definitions/v1SecurityGroupStatus",
+          "description": "Current state of the security group (system-provided, read-only)."
+        }
+      },
+      "description": "Represents a virtual firewall controlling network traffic for compute instances.\n\nSecurityGroup acts as a stateful firewall that controls inbound (ingress) and outbound (egress) traffic for\ncompute instances within a VirtualNetwork. Rules are stateful, meaning return traffic is automatically allowed\nfor established connections.\n\nSecurityGroups follow a default-deny policy: if no rules match, traffic is blocked. This ensures secure-by-default\nbehavior where only explicitly allowed traffic can pass through.\n\nSecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that\nnetwork. They cannot be used across different VirtualNetworks.\n\nThe parent VirtualNetwork relationship is established via metadata.annotations using the 'osac.io/owner-reference'\nkey with the VirtualNetwork ID as the value. This enables proper resource hierarchy for garbage collection - when\na VirtualNetwork is deleted, all associated SecurityGroups are automatically cleaned up.\n\nDesign follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native\nmulti-tenant environments."
+    },
+    "v1SecurityGroupSpec": {
+      "type": "object",
+      "properties": {
+        "virtual_network": {
+          "type": "string",
+          "description": "Parent VirtualNetwork ID for this security group.\n\nMust reference the ID of an existing VirtualNetwork in READY state. Security groups are scoped to a\nVirtualNetwork and can only be applied to compute instances within that network. This field is required\nand immutable after creation.\n\nExample: \"vnet-12345abc\""
+        },
+        "ingress": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1SecurityRule"
+          },
+          "description": "List of rules controlling inbound traffic to compute instances.\n\nRules are evaluated in order; first matching rule determines whether traffic is allowed. If no rules\nmatch, traffic is denied by default.\n\nExample: Allow SSH from specific CIDR, allow HTTP/HTTPS from anywhere, allow ICMP ping"
+        },
+        "egress": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1SecurityRule"
+          },
+          "description": "List of rules controlling outbound traffic from compute instances.\n\nRules are evaluated in order; first matching rule determines whether traffic is allowed. If no rules\nmatch, traffic is denied by default.\n\nExample: Allow all outbound traffic, or restrict to specific destinations"
+        }
+      },
+      "description": "Defines the desired configuration for a SecurityGroup.\n\nThe spec contains user-specified firewall rules that define allowed network traffic. Rules are evaluated\nin order, and the first matching rule determines whether traffic is allowed. If no rules match, traffic\nis denied by default."
+    },
+    "v1SecurityGroupState": {
+      "type": "string",
+      "enum": [
+        "SECURITY_GROUP_STATE_UNSPECIFIED",
+        "SECURITY_GROUP_STATE_PENDING",
+        "SECURITY_GROUP_STATE_READY",
+        "SECURITY_GROUP_STATE_FAILED"
+      ],
+      "default": "SECURITY_GROUP_STATE_UNSPECIFIED",
+      "description": "Lifecycle states for SecurityGroup resources.\n\nState transitions typically follow: UNSPECIFIED -\u003e PENDING -\u003e READY, with FAILED as a terminal error state\nthat may require user intervention or resource recreation.\n\n - SECURITY_GROUP_STATE_UNSPECIFIED: State is unknown or has not been determined yet. This is the default state before initialization.\n - SECURITY_GROUP_STATE_PENDING: The security group is being initialized and is not ready for use yet.\n\nDuring this state, the system is:\n- Validating firewall rules (port ranges, CIDR notation)\n- Checking parent VirtualNetwork exists and is in READY state\n- Configuring firewall backend\n- Installing rules in the network infrastructure\n\nSecurity groups in PENDING state cannot be attached to compute instances.\n - SECURITY_GROUP_STATE_READY: The security group is fully operational and ready for compute instances to use.\n\nIn this state:\n- All rules are validated and active\n- Firewall backend is configured\n- Security group can be attached to compute instances\n- Traffic filtering is enforced according to the rules\n - SECURITY_GROUP_STATE_FAILED: The security group has encountered an error and is unusable.\n\nCommon failure reasons include:\n- Invalid port range (port_from \u003e port_to, or values outside 1-65535)\n- Invalid CIDR notation\n- Parent VirtualNetwork does not exist\n- Parent VirtualNetwork is not in READY state\n- Protocol tcp/udp missing required port fields\n- Firewall backend configuration error\n\nThe status.message field will contain specific error details. Failed security groups typically require\ndeletion and recreation with corrected parameters, or resolution of the parent VirtualNetwork issue."
+    },
+    "v1SecurityGroupStatus": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "#/definitions/v1SecurityGroupState",
+          "description": "Current lifecycle state of the security group."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable message providing additional details about the current state.\n\nFor PENDING state, this might contain progress information like \"Validating rules\" or \"Configuring\nfirewall backend\".\n\nFor FAILED state, this contains error details explaining what went wrong, such as:\n- \"Invalid port range: port_from (100) \u003e port_to (50)\"\n- \"Parent VirtualNetwork not found: vnet-12345\"\n- \"Parent VirtualNetwork not in READY state\"\n- \"Invalid IPv4 CIDR: 192.168.1.0/33\"\n- \"Protocol tcp requires port_from and port_to fields\"\n\nFor READY state, this is typically empty or contains confirmation like \"Security group active, rules\nenforced\"."
+        }
+      },
+      "description": "Represents the current operational state of a SecurityGroup.\n\nStatus is system-provided and read-only. Users cannot modify status fields directly; the system updates\nthem based on the reconciliation of the spec and the state of the parent VirtualNetwork."
+    },
+    "v1SecurityGroupsCreateResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1SecurityGroup"
+        }
+      }
+    },
+    "v1SecurityGroupsDeleteResponse": {
+      "type": "object"
+    },
+    "v1SecurityGroupsGetResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1SecurityGroup"
+        }
+      }
+    },
+    "v1SecurityGroupsListResponse": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter\nof the request if there are not enough items, or if the system decides that returning that number of items isn't\nfeasible or convenient for performance reasons."
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Total number of items of the collection that match the search criteria, regardless of the number of results\nrequested with the `limit` parameter."
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1SecurityGroup"
+          },
+          "description": "List of results."
+        }
+      }
+    },
+    "v1SecurityGroupsUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1SecurityGroup"
+        }
+      }
+    },
+    "v1SecurityRule": {
+      "type": "object",
+      "properties": {
+        "protocol": {
+          "$ref": "#/definitions/v1Protocol",
+          "description": "Protocol to match for this rule.\n\nUse PROTOCOL_ALL to match all protocols (wildcard). Use PROTOCOL_TCP or PROTOCOL_UDP when port ranges\nare needed. Use PROTOCOL_ICMP for ping and other ICMP traffic."
+        },
+        "port_from": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Starting port number for the rule (1-65535).\n\nRequired for tcp/udp protocols, ignored for icmp/all. For single port, set port_from = port_to.\nMust be \u003c= port_to. Validation enforced at service layer.\n\nExample: 22 (SSH), 80 (HTTP), 443 (HTTPS), 3306 (MySQL)"
+        },
+        "port_to": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Ending port number for the rule (1-65535).\n\nRequired for tcp/udp protocols, ignored for icmp/all. Must be \u003e= port_from. For single port, set\nport_from = port_to. Validation enforced at service layer.\n\nExample: 22 (single port), 8000 (range 8000-9000)"
+        },
+        "ipv4_cidr": {
+          "type": "string",
+          "description": "IPv4 CIDR block for source (ingress) or destination (egress) addresses.\n\nMust be valid CIDR notation. Use '0.0.0.0/0' to match all IPv4 addresses. Validation enforced at\nservice layer.\n\nExample: '192.168.1.0/24', '10.0.0.0/8', '0.0.0.0/0' (all IPv4)"
+        },
+        "ipv6_cidr": {
+          "type": "string",
+          "description": "IPv6 CIDR block for source (ingress) or destination (egress) addresses.\n\nMust be valid CIDR notation. Use '::/0' to match all IPv6 addresses. Validation enforced at service\nlayer.\n\nExample: '2001:db8::/32', 'fd00::/64', '::/0' (all IPv6)"
+        }
+      },
+      "description": "Defines a single firewall rule for network traffic filtering.\n\nSecurityRule specifies which traffic to allow based on protocol, port ranges (for TCP/UDP), and source/\ndestination CIDR blocks. Rules are stateful - return traffic for established connections is automatically\nallowed.\n\nPort ranges apply only to TCP and UDP protocols. For ICMP and ALL protocols, port fields are ignored.\n\nCIDR fields support IPv4-only, IPv6-only, or dual-stack configurations:\n- IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty\n- IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty\n- Dual-stack: Set both ipv4_cidr and ipv6_cidr (creates two separate rules internally)"
+    },
+    "v1Subnet": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the subnet."
+        },
+        "metadata": {
+          "$ref": "#/definitions/v1Metadata",
+          "description": "Metadata of the subnet, including name, labels, tenants, and timestamps.\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the\n'osac.io/owner-reference' key with the VirtualNetwork ID as the value. This establishes resource\nhierarchy for garbage collection."
+        },
+        "spec": {
+          "$ref": "#/definitions/v1SubnetSpec",
+          "description": "Desired configuration of the subnet (user-modifiable)."
+        },
+        "status": {
+          "$ref": "#/definitions/v1SubnetStatus",
+          "description": "Current state of the subnet (system-provided, read-only)."
+        }
+      },
+      "description": "Represents a subdivision of a VirtualNetwork for organizing compute instances.\n\nSubnets subdivide VirtualNetwork IP address space into smaller, manageable segments. Each Subnet belongs to exactly\none parent VirtualNetwork and must be in the same region. Initially, the system supports a 1:1 mapping between\nVirtualNetwork and Subnet (one subnet per network), but the schema is designed to support multiple subnets per\nVirtualNetwork in the future.\n\nSubnets support flexible IP addressing to match the parent VirtualNetwork's capabilities:\n- IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty\n- IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty\n- Dual-stack: Set both ipv4_cidr and ipv6_cidr\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the 'osac.io/owner-reference'\nkey with the VirtualNetwork ID as the value. This establishes resource hierarchy for garbage collection, ensuring\nthat Subnets are automatically cleaned up when their parent VirtualNetwork is deleted.\n\nCIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the\nparent VirtualNetwork's CIDR. Validation is enforced at the service layer."
+    },
+    "v1SubnetSpec": {
+      "type": "object",
+      "properties": {
+        "virtual_network": {
+          "type": "string",
+          "description": "Parent VirtualNetwork ID. Required and immutable after creation.\n\nMust reference the ID of an existing VirtualNetwork in READY state. This field is required and immutable\nafter creation. The referenced VirtualNetwork must be in the same region as this Subnet.\n\nThe system validates that:\n- The VirtualNetwork exists\n- The VirtualNetwork.status.state is READY\n- The Subnet's CIDR blocks are subsets of the VirtualNetwork's CIDR blocks\n- The Subnet's CIDR blocks do not overlap with other Subnets in the same VirtualNetwork\n\nExample: \"vnet-abc123\""
+        },
+        "ipv4_cidr": {
+          "type": "string",
+          "description": "IPv4 CIDR block for this subnet. Optional for IPv6-only subnets.\n\nMust be valid CIDR notation and a subset of the parent VirtualNetwork.spec.ipv4_cidr. Validation enforced\nat service layer. The CIDR block must not overlap with other Subnets within the same VirtualNetwork.\n\nExample: \"10.0.1.0/24\", \"192.168.100.0/24\"\n\nLeave empty for IPv6-only subnets."
+        },
+        "ipv6_cidr": {
+          "type": "string",
+          "description": "IPv6 CIDR block for this subnet. Optional for IPv4-only subnets.\n\nMust be valid CIDR notation and a subset of the parent VirtualNetwork.spec.ipv6_cidr. Validation enforced\nat service layer. The CIDR block must not overlap with other Subnets within the same VirtualNetwork.\n\nExample: \"2001:db8::/64\", \"fd00:1234::/64\"\n\nLeave empty for IPv4-only subnets."
+        }
+      },
+      "description": "Defines the desired configuration for a Subnet.\n\nThe spec contains user-specified parameters that define how the subnet should be configured. These fields\nfollow a declarative model where users specify the desired state and the system reconciles to match it."
+    },
+    "v1SubnetState": {
+      "type": "string",
+      "enum": [
+        "SUBNET_STATE_UNSPECIFIED",
+        "SUBNET_STATE_PENDING",
+        "SUBNET_STATE_READY",
+        "SUBNET_STATE_FAILED"
+      ],
+      "default": "SUBNET_STATE_UNSPECIFIED",
+      "description": "Lifecycle states for Subnet resources.\n\nState transitions typically follow: UNSPECIFIED -\u003e PENDING -\u003e READY, with FAILED as a terminal error state\nthat may require user intervention or resource recreation.\n\n - SUBNET_STATE_UNSPECIFIED: State is unknown or has not been determined yet. This is the default state before initialization.\n - SUBNET_STATE_PENDING: The subnet is being initialized and is not ready for use yet.\n\nDuring this state, the system is:\n- Validating that the parent VirtualNetwork exists and is in READY state\n- Validating CIDR blocks (format, subset of parent, no overlaps)\n- Allocating IP address space within the parent VirtualNetwork\n- Configuring subnet routing and network policies\n\nCompute instances cannot be attached to subnets in PENDING state.\n - SUBNET_STATE_READY: The subnet is fully operational and ready for compute instances to attach.\n\nIn this state:\n- CIDR blocks are allocated and validated\n- Parent VirtualNetwork is in READY state\n- Subnet routing is configured\n- Compute instances can be created and attached\n- IP address allocation is active\n - SUBNET_STATE_FAILED: The subnet has encountered an error and is unusable.\n\nCommon failure reasons include:\n- Invalid CIDR notation\n- CIDR block is not a subset of parent VirtualNetwork CIDR\n- CIDR block overlaps with existing subnets in the same VirtualNetwork\n- Parent VirtualNetwork not found\n- Parent VirtualNetwork not in READY state\n- Network configuration error\n\nThe status.message field will contain specific error details. Failed subnets typically require deletion\nand recreation with corrected parameters."
+    },
+    "v1SubnetStatus": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "#/definitions/v1SubnetState",
+          "description": "Current lifecycle state of the subnet."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable message providing additional details about the current state.\n\nFor PENDING state, this might contain progress information like \"Validating CIDR blocks\" or\n\"Configuring subnet routing\".\n\nFor FAILED state, contains error details like:\n- \"CIDR overlaps with existing subnet\"\n- \"Parent VirtualNetwork not found\"\n- \"CIDR is not a subset of parent VirtualNetwork CIDR\"\n- \"Invalid CIDR notation\"\n- \"Parent VirtualNetwork not in READY state\"\n\nFor READY state, this is typically empty or contains confirmation like \"Subnet ready for compute instances\"."
+        }
+      },
+      "description": "Represents the current operational state of a Subnet.\n\nStatus is system-provided and read-only. Users cannot modify status fields directly; the system updates them\nbased on the reconciliation of the spec."
+    },
+    "v1SubnetsCreateResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1Subnet"
+        }
+      }
+    },
+    "v1SubnetsDeleteResponse": {
+      "type": "object"
+    },
+    "v1SubnetsGetResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1Subnet"
+        }
+      }
+    },
+    "v1SubnetsListResponse": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter\nof the request if there are not enough items, or if the system decides that returning that number of items isn't\nfeasible or convenient for performance reasons."
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Total number of items of the collection that match the search criteria, regardless of the number of results\nrequested with the `limit` parameter."
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Subnet"
+          },
+          "description": "List of results."
+        }
+      }
+    },
+    "v1SubnetsUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1Subnet"
+        }
+      }
+    },
+    "v1VirtualNetwork": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the virtual network."
+        },
+        "metadata": {
+          "$ref": "#/definitions/v1Metadata",
+          "description": "Metadata of the virtual network, including name, labels, tenants, and timestamps."
+        },
+        "spec": {
+          "$ref": "#/definitions/v1VirtualNetworkSpec",
+          "description": "Desired configuration of the virtual network (user-modifiable)."
+        },
+        "status": {
+          "$ref": "#/definitions/v1VirtualNetworkStatus",
+          "description": "Current state of the virtual network (system-provided, read-only)."
+        }
+      },
+      "description": "Represents a tenant-isolated virtual network.\n\nVirtualNetwork provides network isolation for compute instances within a region. Each VirtualNetwork is backed\nby a specific NetworkClass implementation strategy (e.g., \"udn-net\" for User-Defined Networks, \"phys-net\" for\nphysical network infrastructure).\n\nVirtualNetworks support flexible IP addressing:\n- IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty\n- IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty\n- Dual-stack: Set both ipv4_cidr and ipv6_cidr\n\nThe selected NetworkClass must support the requested IP addressing mode via its capabilities.\n\nTenant isolation is enforced via the standard shared.v1.Metadata tenants field. VirtualNetworks are scoped to\na single region and cannot span multiple regions."
+    },
+    "v1VirtualNetworkCapabilities": {
+      "type": "object",
+      "properties": {
+        "enable_ipv4": {
+          "type": "boolean",
+          "description": "Whether IPv4 is enabled for this network. Should be true when ipv4_cidr is set."
+        },
+        "enable_ipv6": {
+          "type": "boolean",
+          "description": "Whether IPv6 is enabled for this network. Should be true when ipv6_cidr is set."
+        },
+        "enable_dual_stack": {
+          "type": "boolean",
+          "description": "Whether dual-stack mode (both IPv4 and IPv6) is enabled. Should be true when both ipv4_cidr and ipv6_cidr\nare set."
+        }
+      },
+      "description": "Describes the IP addressing capabilities requested for a VirtualNetwork.\n\nThese flags must be compatible with the selected NetworkClass.capabilities. For example, if enable_dual_stack\nis true, the selected NetworkClass must have supports_dual_stack set to true."
+    },
+    "v1VirtualNetworkSpec": {
+      "type": "object",
+      "properties": {
+        "region": {
+          "type": "string",
+          "description": "Region where the network is created. This is required and immutable after creation.\n\nVirtualNetworks are region-scoped resources and cannot span multiple regions. Compute instances can only\nattach to VirtualNetworks in the same region.\n\nExample: \"us-east-1\", \"eu-west-2\""
+        },
+        "network_class": {
+          "type": "string",
+          "description": "NetworkClass implementation strategy to use for this network.\n\nThis references the `implementation_strategy` field of a NetworkClass resource. The selected NetworkClass\ndetermines the underlying network backend (e.g., \"udn-net\", \"phys-net\") and the available capabilities.\n\nThe NetworkClass must support the requested IP addressing capabilities (IPv4, IPv6, or dual-stack) specified\nvia the capabilities field.\n\nThis field is required and immutable after creation.\n\nExample: \"udn-net\", \"phys-net\", \"ovn-kubernetes\""
+        },
+        "ipv4_cidr": {
+          "type": "string",
+          "description": "IPv4 CIDR block for this network. Optional for IPv6-only networks.\n\nMust be valid CIDR notation. Validation enforced at service layer.\nThe CIDR block should be appropriately sized for the expected number of compute instances.\n\nExample: \"10.0.0.0/16\", \"192.168.0.0/24\"\n\nLeave empty when creating an IPv6-only network."
+        },
+        "ipv6_cidr": {
+          "type": "string",
+          "description": "IPv6 CIDR block for this network. Optional for IPv4-only networks.\n\nMust be valid CIDR notation. Validation enforced at service layer.\nIPv6 addresses should follow standard allocation practices for tenant networks.\n\nExample: \"2001:db8::/48\", \"fd00::/64\"\n\nLeave empty when creating an IPv4-only network."
+        },
+        "capabilities": {
+          "$ref": "#/definitions/v1VirtualNetworkCapabilities",
+          "description": "Requested network capabilities for this VirtualNetwork.\n\nThese capabilities must be compatible with the selected NetworkClass.capabilities. The system will validate\nthat the NetworkClass supports the requested addressing mode before creating the network."
+        }
+      },
+      "description": "Defines the desired configuration for a VirtualNetwork.\n\nThe spec contains user-specified parameters that define how the network should be configured. These fields\nfollow a declarative model where users specify the desired state and the system reconciles to match it."
+    },
+    "v1VirtualNetworkState": {
+      "type": "string",
+      "enum": [
+        "VIRTUAL_NETWORK_STATE_UNSPECIFIED",
+        "VIRTUAL_NETWORK_STATE_PENDING",
+        "VIRTUAL_NETWORK_STATE_READY",
+        "VIRTUAL_NETWORK_STATE_FAILED"
+      ],
+      "default": "VIRTUAL_NETWORK_STATE_UNSPECIFIED",
+      "description": "Lifecycle states for VirtualNetwork resources.\n\nState transitions typically follow: UNSPECIFIED -\u003e PENDING -\u003e READY, with FAILED as a terminal error state\nthat may require user intervention or resource recreation.\n\n - VIRTUAL_NETWORK_STATE_UNSPECIFIED: State is unknown or has not been determined yet. This is the default state before initialization.\n - VIRTUAL_NETWORK_STATE_PENDING: The virtual network is being initialized and is not ready for use yet.\n\nDuring this state, the system is:\n- Validating CIDR blocks\n- Checking NetworkClass compatibility\n- Allocating IP address space\n- Configuring the network backend\n\nCompute instances cannot be attached to networks in PENDING state.\n - VIRTUAL_NETWORK_STATE_READY: The virtual network is fully operational and ready for compute instances to attach.\n\nIn this state:\n- CIDR blocks are allocated and configured\n- Network backend is ready\n- Compute instances can be created and attached\n- Network isolation and routing are active\n - VIRTUAL_NETWORK_STATE_FAILED: The virtual network has encountered an error and is unusable.\n\nCommon failure reasons include:\n- Invalid CIDR notation\n- CIDR block conflicts with existing networks\n- NetworkClass does not support requested capabilities (e.g., dual-stack not supported)\n- NetworkClass is not in READY state\n- Network backend configuration error\n\nThe status.message field will contain specific error details. Failed networks typically require deletion\nand recreation with corrected parameters."
+    },
+    "v1VirtualNetworkStatus": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "#/definitions/v1VirtualNetworkState",
+          "description": "Current lifecycle state of the virtual network."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable message providing additional details about the current state.\n\nFor PENDING state, this might contain progress information like \"Allocating IP address space\" or\n\"Configuring network backend\".\n\nFor FAILED state, this contains error details explaining what went wrong, such as \"Invalid CIDR range\" or\n\"NetworkClass does not support dual-stack\".\n\nFor READY state, this is typically empty or contains confirmation like \"Network ready for compute instances\"."
+        }
+      },
+      "description": "Represents the current operational state of a VirtualNetwork.\n\nStatus is system-provided and read-only. Users cannot modify status fields directly; the system updates them\nbased on the reconciliation of the spec."
+    },
+    "v1VirtualNetworksCreateResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1VirtualNetwork"
+        }
+      }
+    },
+    "v1VirtualNetworksDeleteResponse": {
+      "type": "object"
+    },
+    "v1VirtualNetworksGetResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1VirtualNetwork"
+        }
+      }
+    },
+    "v1VirtualNetworksListResponse": {
+      "type": "object",
+      "properties": {
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter\nof the request if there are not enough items, or if the system decides that returning that number of items isn't\nfeasible or convenient for performance reasons."
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Total number of items of the collection that match the search criteria, regardless of the number of results\nrequested with the `limit` parameter."
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1VirtualNetwork"
+          },
+          "description": "List of results."
+        }
+      }
+    },
+    "v1VirtualNetworksUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "$ref": "#/definitions/v1VirtualNetwork"
         }
       }
     }

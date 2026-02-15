@@ -19,6 +19,10 @@ tags:
 - name: HostClasses
 - name: HostPools
 - name: Hosts
+- name: NetworkClasses
+- name: SecurityGroups
+- name: Subnets
+- name: VirtualNetworks
 - name: Metadata
 paths:
   /api/events/v1/events:
@@ -1546,6 +1550,788 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/v1Host"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      x-codegen-request-body-name: object
+  /api/fulfillment/v1/network_classes:
+    get:
+      tags:
+      - NetworkClasses
+      summary: Retrieves the list of network classes.
+      operationId: NetworkClasses_List
+      parameters:
+      - name: offset
+        in: query
+        description: Index of the first result. If not specified the default value
+          will be zero.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: |-
+          Maximum number of results to be returned by the server. When not specified all the results will be returned. Note
+          that there may not be enough results to return, and that the server may decide, for performance reasons, to return
+          less results than requested.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: |-
+          Filter criteria.
+
+          The syntax of this parameter is similar to the syntax of the _where_ clause of a SQL statement, but using the names
+          of the attributes of the network class instead of the names of the columns of a table. For example, in order to
+          retrieve all the network classes with an implementation_strategy of `udn-net` the value should be:
+
+              implementation_strategy = 'udn-net'
+
+          Or to retrieve network classes with titles starting with `physical`:
+
+              title like 'physical%'
+
+          If this isn't provided, or if the value is empty, then all the network classes that the user has permission to see
+          will be returned.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: |-
+          Order criteria.
+
+          The syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the
+          names of the attributes of the network class instead of the names of the columns of a table. For example, in order to
+          sort the network classes descending by title the value should be:
+
+              title desc
+
+          If the parameter isn't provided, or if the value is empty, then the order of the results is undefined.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1NetworkClassesListResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+    post:
+      tags:
+      - NetworkClasses
+      summary: Creates a new network class.
+      description: "This method isn't allowed for regular users, only for the system\
+        \ itself."
+      operationId: NetworkClasses_Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/v1NetworkClass"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1NetworkClass"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      x-codegen-request-body-name: object
+  /api/fulfillment/v1/network_classes/{id}:
+    get:
+      tags:
+      - NetworkClasses
+      summary: Retrieves the details of one specific network class.
+      operationId: NetworkClasses_Get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1NetworkClass"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+    delete:
+      tags:
+      - NetworkClasses
+      summary: Deletes a network class.
+      description: "This method isn't allowed for regular users, only for the system\
+        \ itself."
+      operationId: NetworkClasses_Delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1NetworkClassesDeleteResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+  /api/fulfillment/v1/network_classes/{object.id}:
+    patch:
+      tags:
+      - NetworkClasses
+      summary: Updates an existing network class.
+      description: "This method isn't allowed for regular users, only for the system\
+        \ itself."
+      operationId: NetworkClasses_Update
+      parameters:
+      - name: object.id
+        in: path
+        description: Unique identifier of the network class.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/network_classes_object_id_body"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1NetworkClass"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      x-codegen-request-body-name: object
+  /api/fulfillment/v1/security_groups:
+    get:
+      tags:
+      - SecurityGroups
+      summary: Retrieves the list of security groups.
+      operationId: SecurityGroups_List
+      parameters:
+      - name: offset
+        in: query
+        description: Index of the first result. If not specified the default value
+          will be zero.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: |-
+          Maximum number of results to be returned by the server. When not specified all the results will be returned. Note
+          that there may not be enough results to return, and that the server may decide, for performance reasons, to return
+          less results than requested.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: |-
+          Filter criteria.
+
+          The syntax of this parameter is similar to the syntax of the _where_ clause of a SQL statement, but using the names
+          of the attributes of the security group instead of the names of the columns of a table. For example, in order to
+          retrieve all the security groups with a virtual_network of `vnet-123` the value should be:
+
+              virtual_network = 'vnet-123'
+
+          Or to retrieve security groups with names starting with `web-servers`:
+
+              metadata.name like 'web-servers%'
+
+          If this isn't provided, or if the value is empty, then all the security groups that the user has permission to see
+          will be returned.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: |-
+          Order criteria.
+
+          The syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the
+          names of the attributes of the security group instead of the names of the columns of a table. For example, in order to
+          sort the security groups descending by creation time the value should be:
+
+              metadata.created_at desc
+
+          If the parameter isn't provided, or if the value is empty, then the order of the results is undefined.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1SecurityGroupsListResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+    post:
+      tags:
+      - SecurityGroups
+      summary: Creates a new security group.
+      operationId: SecurityGroups_Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/v1SecurityGroup"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1SecurityGroup"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      x-codegen-request-body-name: object
+  /api/fulfillment/v1/security_groups/{id}:
+    get:
+      tags:
+      - SecurityGroups
+      summary: Retrieves the details of one specific security group.
+      operationId: SecurityGroups_Get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1SecurityGroup"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+    delete:
+      tags:
+      - SecurityGroups
+      summary: Deletes a security group.
+      operationId: SecurityGroups_Delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1SecurityGroupsDeleteResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+  /api/fulfillment/v1/security_groups/{object.id}:
+    patch:
+      tags:
+      - SecurityGroups
+      summary: Updates an existing security group.
+      operationId: SecurityGroups_Update
+      parameters:
+      - name: object.id
+        in: path
+        description: Unique identifier of the security group.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/security_groups_object_id_body"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1SecurityGroup"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      x-codegen-request-body-name: object
+  /api/fulfillment/v1/subnets:
+    get:
+      tags:
+      - Subnets
+      summary: Retrieves the list of subnets.
+      operationId: Subnets_List
+      parameters:
+      - name: offset
+        in: query
+        description: Index of the first result. If not specified the default value
+          will be zero.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: |-
+          Maximum number of results to be returned by the server. When not specified all the results will be returned. Note
+          that there may not be enough results to return, and that the server may decide, for performance reasons, to return
+          less results than requested.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: |-
+          Filter criteria.
+
+          The syntax of this parameter is similar to the syntax of the _where_ clause of a SQL statement, but using the names
+          of the attributes of the subnet instead of the names of the columns of a table. For example, in order to
+          retrieve all the subnets with a specific virtual network the value should be:
+
+              virtual_network = 'vn-123'
+
+          Or to retrieve subnets with names starting with `frontend`:
+
+              metadata.name like 'frontend-%'
+
+          If this isn't provided, or if the value is empty, then all the subnets that the user has permission to see
+          will be returned.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: |-
+          Order criteria.
+
+          The syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the
+          names of the attributes of the subnet instead of the names of the columns of a table. For example, in order to
+          sort the subnets descending by creation time the value should be:
+
+              metadata.created_at desc
+
+          If the parameter isn't provided, or if the value is empty, then the order of the results is undefined.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1SubnetsListResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+    post:
+      tags:
+      - Subnets
+      summary: Creates a new subnet.
+      operationId: Subnets_Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/v1Subnet"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1Subnet"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      x-codegen-request-body-name: object
+  /api/fulfillment/v1/subnets/{id}:
+    get:
+      tags:
+      - Subnets
+      summary: Retrieves the details of one specific subnet.
+      operationId: Subnets_Get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1Subnet"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+    delete:
+      tags:
+      - Subnets
+      summary: Deletes a subnet.
+      operationId: Subnets_Delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1SubnetsDeleteResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+  /api/fulfillment/v1/subnets/{object.id}:
+    patch:
+      tags:
+      - Subnets
+      summary: Updates an existing subnet.
+      operationId: Subnets_Update
+      parameters:
+      - name: object.id
+        in: path
+        description: Unique identifier of the subnet.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/subnets_object_id_body"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1Subnet"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      x-codegen-request-body-name: object
+  /api/fulfillment/v1/virtual_networks:
+    get:
+      tags:
+      - VirtualNetworks
+      summary: Retrieves the list of virtual networks.
+      operationId: VirtualNetworks_List
+      parameters:
+      - name: offset
+        in: query
+        description: Index of the first result. If not specified the default value
+          will be zero.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: |-
+          Maximum number of results to be returned by the server. When not specified all the results will be returned. Note
+          that there may not be enough results to return, and that the server may decide, for performance reasons, to return
+          less results than requested.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+      - name: filter
+        in: query
+        description: |-
+          Filter criteria.
+
+          The syntax of this parameter is similar to the syntax of the _where_ clause of a SQL statement, but using the names
+          of the attributes of the virtual network instead of the names of the columns of a table. For example, in order to
+          retrieve all the virtual networks with a region of `us-east-1` the value should be:
+
+              region = 'us-east-1'
+
+          Or to retrieve virtual networks with names starting with `prod`:
+
+              metadata.name like 'prod-%'
+
+          If this isn't provided, or if the value is empty, then all the virtual networks that the user has permission to see
+          will be returned.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: |-
+          Order criteria.
+
+          The syntax of this parameter is similar to the syntax of the _order by_ clause of a SQL statement, but using the
+          names of the attributes of the virtual network instead of the names of the columns of a table. For example, in order to
+          sort the virtual networks descending by creation time the value should be:
+
+              metadata.created_at desc
+
+          If the parameter isn't provided, or if the value is empty, then the order of the results is undefined.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1VirtualNetworksListResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+    post:
+      tags:
+      - VirtualNetworks
+      summary: Creates a new virtual network.
+      operationId: VirtualNetworks_Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/v1VirtualNetwork"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1VirtualNetwork"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      x-codegen-request-body-name: object
+  /api/fulfillment/v1/virtual_networks/{id}:
+    get:
+      tags:
+      - VirtualNetworks
+      summary: Retrieves the details of one specific virtual network.
+      operationId: VirtualNetworks_Get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1VirtualNetwork"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+    delete:
+      tags:
+      - VirtualNetworks
+      summary: Deletes a virtual network.
+      operationId: VirtualNetworks_Delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1VirtualNetworksDeleteResponse"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+  /api/fulfillment/v1/virtual_networks/{object.id}:
+    patch:
+      tags:
+      - VirtualNetworks
+      summary: Updates an existing virtual network.
+      operationId: VirtualNetworks_Update
+      parameters:
+      - name: object.id
+        in: path
+        description: Unique identifier of the virtual network.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/virtual_networks_object_id_body"
+        required: true
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/v1VirtualNetwork"
         default:
           description: An unexpected error response.
           content:
@@ -3260,6 +4046,797 @@ components:
       properties:
         authn:
           $ref: "#/components/schemas/v1Authn"
+    v1NetworkClass:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the network class.
+        metadata:
+          $ref: "#/components/schemas/v1Metadata"
+        title:
+          type: string
+          description: |-
+            Human friendly short description of the network class, only a few words, suitable for displaying in one single
+            line on a UI or CLI. For example: "UDN Network" or "Physical Network".
+        description:
+          type: string
+          description: |-
+            Human friendly long description of the network class, using Markdown format. This should explain the
+            characteristics of networks created using this class, including performance characteristics, isolation
+            guarantees, and any limitations or requirements.
+        implementation_strategy:
+          type: string
+          description: |-
+            Implementation strategy identifier for this network class. This is the discriminator that VirtualNetwork
+            resources use to select which network backend to use. For example: "udn-net", "phys-net", "ovn-kubernetes".
+
+            This value is system-defined and immutable once the NetworkClass is created.
+        constraints:
+          $ref: "#/components/schemas/v1NetworkClassConstraints"
+        capabilities:
+          $ref: "#/components/schemas/v1NetworkClassCapabilities"
+        status:
+          $ref: "#/components/schemas/v1NetworkClassStatus"
+      description: |-
+        Describes a network implementation strategy available for creating virtual networks.
+
+        NetworkClass represents a specific network backend implementation that VirtualNetworks can use. For example,
+        there could be a network class `udn-net` to describe networks implemented using User-Defined Networks in
+        Kubernetes, and another `phys-net` for networks backed by physical network infrastructure.
+
+        This is similar to the _storage class_ concept used by Kubernetes for persistent volumes, or the _instance type_
+        concept used by cloud providers for compute resources.
+
+        Users query available NetworkClasses to discover which network implementation strategies they can choose when
+        creating VirtualNetworks. The `implementation_strategy` field is the key identifier that VirtualNetwork resources
+        reference to select their network backend.
+    v1NetworkClassCapabilities:
+      type: object
+      properties:
+        supports_ipv4:
+          type: boolean
+          description: Whether this network class supports IPv4 addressing.
+        supports_ipv6:
+          type: boolean
+          description: Whether this network class supports IPv6 addressing.
+        supports_dual_stack:
+          type: boolean
+          description: Whether this network class supports dual-stack (IPv4 + IPv6)
+            configuration.
+      description: |-
+        Describes the capabilities supported by a NetworkClass.
+
+        These fields indicate what network features are available when using this class for VirtualNetwork creation.
+    v1NetworkClassConstraints:
+      type: object
+      description: |-
+        Defines configuration constraints for a specific NetworkClass implementation.
+
+        This message contains implementation-specific parameters that may be required or optional when creating
+        VirtualNetworks using this class. Currently minimal to allow for future extension.
+
+        Reserved for future implementation-specific constraint fields.
+         Examples might include: required VLAN ranges, MTU constraints, required subnet sizes, etc.
+    v1NetworkClassState:
+      type: string
+      description: |-
+        Lifecycle states for NetworkClass resources.
+
+         - NETWORK_CLASS_STATE_UNSPECIFIED: State is unknown or has not been determined yet.
+         - NETWORK_CLASS_STATE_PENDING: The network class is being initialized and is not yet ready for use.
+         - NETWORK_CLASS_STATE_READY: The network class is fully operational and available for creating VirtualNetworks.
+         - NETWORK_CLASS_STATE_FAILED: The network class has encountered an error and cannot be used for creating VirtualNetworks.
+      default: NETWORK_CLASS_STATE_UNSPECIFIED
+      enum:
+      - NETWORK_CLASS_STATE_UNSPECIFIED
+      - NETWORK_CLASS_STATE_PENDING
+      - NETWORK_CLASS_STATE_READY
+      - NETWORK_CLASS_STATE_FAILED
+    v1NetworkClassStatus:
+      type: object
+      properties:
+        state:
+          $ref: "#/components/schemas/v1NetworkClassState"
+        message:
+          type: string
+          description: |-
+            Human-readable message providing additional details about the current state. For example, if the state is
+            FAILED, this message might explain what went wrong.
+      description: Represents the current operational state of a NetworkClass.
+    v1NetworkClassesCreateResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1NetworkClass"
+    v1NetworkClassesDeleteResponse:
+      type: object
+    v1NetworkClassesGetResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1NetworkClass"
+    v1NetworkClassesListResponse:
+      type: object
+      properties:
+        size:
+          type: integer
+          description: |-
+            Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter
+            of the request if there are not enough items, or if the system decides that returning that number of items isn't
+            feasible or convenient for performance reasons.
+          format: int32
+        total:
+          type: integer
+          description: |-
+            Total number of items of the collection that match the search criteria, regardless of the number of results
+            requested with the `limit` parameter.
+          format: int32
+        items:
+          type: array
+          description: List of results.
+          items:
+            $ref: "#/components/schemas/v1NetworkClass"
+    v1NetworkClassesUpdateResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1NetworkClass"
+    v1Protocol:
+      type: string
+      description: |-
+        Network protocol types for SecurityRule matching.
+
+        Determines which layer 4 protocol the rule applies to. Protocol affects whether port range fields are
+        applicable (TCP/UDP) or ignored (ICMP/ALL).
+
+         - PROTOCOL_UNSPECIFIED: Unknown protocol (invalid). This should never be used in actual rules.
+         - PROTOCOL_TCP: TCP protocol. Port ranges (port_from, port_to) are required for TCP rules.
+
+        Used for connection-oriented protocols like HTTP, HTTPS, SSH, database connections, etc.
+         - PROTOCOL_UDP: UDP protocol. Port ranges (port_from, port_to) are required for UDP rules.
+
+        Used for connectionless protocols like DNS, NTP, DHCP, VoIP, etc.
+         - PROTOCOL_ICMP: ICMP protocol (ping and other control messages). Port ranges are not applicable.
+
+        Used for network diagnostics (ping), error reporting, and control messages.
+         - PROTOCOL_ALL: All protocols (wildcard). Port ranges are not applicable.
+
+        Matches any protocol. Useful for allowing all traffic from a trusted CIDR block or for egress rules
+        that permit all outbound traffic.
+      default: PROTOCOL_UNSPECIFIED
+      enum:
+      - PROTOCOL_UNSPECIFIED
+      - PROTOCOL_TCP
+      - PROTOCOL_UDP
+      - PROTOCOL_ICMP
+      - PROTOCOL_ALL
+    v1SecurityGroup:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the security group.
+        metadata:
+          $ref: "#/components/schemas/v1Metadata"
+        spec:
+          $ref: "#/components/schemas/v1SecurityGroupSpec"
+        status:
+          $ref: "#/components/schemas/v1SecurityGroupStatus"
+      description: |-
+        Represents a virtual firewall controlling network traffic for compute instances.
+
+        SecurityGroup acts as a stateful firewall that controls inbound (ingress) and outbound (egress) traffic for
+        compute instances within a VirtualNetwork. Rules are stateful, meaning return traffic is automatically allowed
+        for established connections.
+
+        SecurityGroups follow a default-deny policy: if no rules match, traffic is blocked. This ensures secure-by-default
+        behavior where only explicitly allowed traffic can pass through.
+
+        SecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that
+        network. They cannot be used across different VirtualNetworks.
+
+        The parent VirtualNetwork relationship is established via metadata.annotations using the 'osac.io/owner-reference'
+        key with the VirtualNetwork ID as the value. This enables proper resource hierarchy for garbage collection - when
+        a VirtualNetwork is deleted, all associated SecurityGroups are automatically cleaned up.
+
+        Design follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native
+        multi-tenant environments.
+    v1SecurityGroupSpec:
+      type: object
+      properties:
+        virtual_network:
+          type: string
+          description: |-
+            Parent VirtualNetwork ID for this security group.
+
+            Must reference the ID of an existing VirtualNetwork in READY state. Security groups are scoped to a
+            VirtualNetwork and can only be applied to compute instances within that network. This field is required
+            and immutable after creation.
+
+            Example: "vnet-12345abc"
+        ingress:
+          type: array
+          description: |-
+            List of rules controlling inbound traffic to compute instances.
+
+            Rules are evaluated in order; first matching rule determines whether traffic is allowed. If no rules
+            match, traffic is denied by default.
+
+            Example: Allow SSH from specific CIDR, allow HTTP/HTTPS from anywhere, allow ICMP ping
+          items:
+            $ref: "#/components/schemas/v1SecurityRule"
+        egress:
+          type: array
+          description: |-
+            List of rules controlling outbound traffic from compute instances.
+
+            Rules are evaluated in order; first matching rule determines whether traffic is allowed. If no rules
+            match, traffic is denied by default.
+
+            Example: Allow all outbound traffic, or restrict to specific destinations
+          items:
+            $ref: "#/components/schemas/v1SecurityRule"
+      description: |-
+        Defines the desired configuration for a SecurityGroup.
+
+        The spec contains user-specified firewall rules that define allowed network traffic. Rules are evaluated
+        in order, and the first matching rule determines whether traffic is allowed. If no rules match, traffic
+        is denied by default.
+    v1SecurityGroupState:
+      type: string
+      description: |-
+        Lifecycle states for SecurityGroup resources.
+
+        State transitions typically follow: UNSPECIFIED -> PENDING -> READY, with FAILED as a terminal error state
+        that may require user intervention or resource recreation.
+
+         - SECURITY_GROUP_STATE_UNSPECIFIED: State is unknown or has not been determined yet. This is the default state before initialization.
+         - SECURITY_GROUP_STATE_PENDING: The security group is being initialized and is not ready for use yet.
+
+        During this state, the system is:
+        - Validating firewall rules (port ranges, CIDR notation)
+        - Checking parent VirtualNetwork exists and is in READY state
+        - Configuring firewall backend
+        - Installing rules in the network infrastructure
+
+        Security groups in PENDING state cannot be attached to compute instances.
+         - SECURITY_GROUP_STATE_READY: The security group is fully operational and ready for compute instances to use.
+
+        In this state:
+        - All rules are validated and active
+        - Firewall backend is configured
+        - Security group can be attached to compute instances
+        - Traffic filtering is enforced according to the rules
+         - SECURITY_GROUP_STATE_FAILED: The security group has encountered an error and is unusable.
+
+        Common failure reasons include:
+        - Invalid port range (port_from > port_to, or values outside 1-65535)
+        - Invalid CIDR notation
+        - Parent VirtualNetwork does not exist
+        - Parent VirtualNetwork is not in READY state
+        - Protocol tcp/udp missing required port fields
+        - Firewall backend configuration error
+
+        The status.message field will contain specific error details. Failed security groups typically require
+        deletion and recreation with corrected parameters, or resolution of the parent VirtualNetwork issue.
+      default: SECURITY_GROUP_STATE_UNSPECIFIED
+      enum:
+      - SECURITY_GROUP_STATE_UNSPECIFIED
+      - SECURITY_GROUP_STATE_PENDING
+      - SECURITY_GROUP_STATE_READY
+      - SECURITY_GROUP_STATE_FAILED
+    v1SecurityGroupStatus:
+      type: object
+      properties:
+        state:
+          $ref: "#/components/schemas/v1SecurityGroupState"
+        message:
+          type: string
+          description: |-
+            Human-readable message providing additional details about the current state.
+
+            For PENDING state, this might contain progress information like "Validating rules" or "Configuring
+            firewall backend".
+
+            For FAILED state, this contains error details explaining what went wrong, such as:
+            - "Invalid port range: port_from (100) > port_to (50)"
+            - "Parent VirtualNetwork not found: vnet-12345"
+            - "Parent VirtualNetwork not in READY state"
+            - "Invalid IPv4 CIDR: 192.168.1.0/33"
+            - "Protocol tcp requires port_from and port_to fields"
+
+            For READY state, this is typically empty or contains confirmation like "Security group active, rules
+            enforced".
+      description: |-
+        Represents the current operational state of a SecurityGroup.
+
+        Status is system-provided and read-only. Users cannot modify status fields directly; the system updates
+        them based on the reconciliation of the spec and the state of the parent VirtualNetwork.
+    v1SecurityGroupsCreateResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1SecurityGroup"
+    v1SecurityGroupsDeleteResponse:
+      type: object
+    v1SecurityGroupsGetResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1SecurityGroup"
+    v1SecurityGroupsListResponse:
+      type: object
+      properties:
+        size:
+          type: integer
+          description: |-
+            Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter
+            of the request if there are not enough items, or if the system decides that returning that number of items isn't
+            feasible or convenient for performance reasons.
+          format: int32
+        total:
+          type: integer
+          description: |-
+            Total number of items of the collection that match the search criteria, regardless of the number of results
+            requested with the `limit` parameter.
+          format: int32
+        items:
+          type: array
+          description: List of results.
+          items:
+            $ref: "#/components/schemas/v1SecurityGroup"
+    v1SecurityGroupsUpdateResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1SecurityGroup"
+    v1SecurityRule:
+      type: object
+      properties:
+        protocol:
+          $ref: "#/components/schemas/v1Protocol"
+        port_from:
+          type: integer
+          description: |-
+            Starting port number for the rule (1-65535).
+
+            Required for tcp/udp protocols, ignored for icmp/all. For single port, set port_from = port_to.
+            Must be <= port_to. Validation enforced at service layer.
+
+            Example: 22 (SSH), 80 (HTTP), 443 (HTTPS), 3306 (MySQL)
+          format: int32
+        port_to:
+          type: integer
+          description: |-
+            Ending port number for the rule (1-65535).
+
+            Required for tcp/udp protocols, ignored for icmp/all. Must be >= port_from. For single port, set
+            port_from = port_to. Validation enforced at service layer.
+
+            Example: 22 (single port), 8000 (range 8000-9000)
+          format: int32
+        ipv4_cidr:
+          type: string
+          description: |-
+            IPv4 CIDR block for source (ingress) or destination (egress) addresses.
+
+            Must be valid CIDR notation. Use '0.0.0.0/0' to match all IPv4 addresses. Validation enforced at
+            service layer.
+
+            Example: '192.168.1.0/24', '10.0.0.0/8', '0.0.0.0/0' (all IPv4)
+        ipv6_cidr:
+          type: string
+          description: |-
+            IPv6 CIDR block for source (ingress) or destination (egress) addresses.
+
+            Must be valid CIDR notation. Use '::/0' to match all IPv6 addresses. Validation enforced at service
+            layer.
+
+            Example: '2001:db8::/32', 'fd00::/64', '::/0' (all IPv6)
+      description: |-
+        Defines a single firewall rule for network traffic filtering.
+
+        SecurityRule specifies which traffic to allow based on protocol, port ranges (for TCP/UDP), and source/
+        destination CIDR blocks. Rules are stateful - return traffic for established connections is automatically
+        allowed.
+
+        Port ranges apply only to TCP and UDP protocols. For ICMP and ALL protocols, port fields are ignored.
+
+        CIDR fields support IPv4-only, IPv6-only, or dual-stack configurations:
+        - IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty
+        - IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty
+        - Dual-stack: Set both ipv4_cidr and ipv6_cidr (creates two separate rules internally)
+    v1Subnet:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the subnet.
+        metadata:
+          $ref: "#/components/schemas/v1Metadata"
+        spec:
+          $ref: "#/components/schemas/v1SubnetSpec"
+        status:
+          $ref: "#/components/schemas/v1SubnetStatus"
+      description: |-
+        Represents a subdivision of a VirtualNetwork for organizing compute instances.
+
+        Subnets subdivide VirtualNetwork IP address space into smaller, manageable segments. Each Subnet belongs to exactly
+        one parent VirtualNetwork and must be in the same region. Initially, the system supports a 1:1 mapping between
+        VirtualNetwork and Subnet (one subnet per network), but the schema is designed to support multiple subnets per
+        VirtualNetwork in the future.
+
+        Subnets support flexible IP addressing to match the parent VirtualNetwork's capabilities:
+        - IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty
+        - IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty
+        - Dual-stack: Set both ipv4_cidr and ipv6_cidr
+
+        The parent VirtualNetwork relationship should be specified via metadata.annotations using the 'osac.io/owner-reference'
+        key with the VirtualNetwork ID as the value. This establishes resource hierarchy for garbage collection, ensuring
+        that Subnets are automatically cleaned up when their parent VirtualNetwork is deleted.
+
+        CIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the
+        parent VirtualNetwork's CIDR. Validation is enforced at the service layer.
+    v1SubnetSpec:
+      type: object
+      properties:
+        virtual_network:
+          type: string
+          description: |-
+            Parent VirtualNetwork ID. Required and immutable after creation.
+
+            Must reference the ID of an existing VirtualNetwork in READY state. This field is required and immutable
+            after creation. The referenced VirtualNetwork must be in the same region as this Subnet.
+
+            The system validates that:
+            - The VirtualNetwork exists
+            - The VirtualNetwork.status.state is READY
+            - The Subnet's CIDR blocks are subsets of the VirtualNetwork's CIDR blocks
+            - The Subnet's CIDR blocks do not overlap with other Subnets in the same VirtualNetwork
+
+            Example: "vnet-abc123"
+        ipv4_cidr:
+          type: string
+          description: |-
+            IPv4 CIDR block for this subnet. Optional for IPv6-only subnets.
+
+            Must be valid CIDR notation and a subset of the parent VirtualNetwork.spec.ipv4_cidr. Validation enforced
+            at service layer. The CIDR block must not overlap with other Subnets within the same VirtualNetwork.
+
+            Example: "10.0.1.0/24", "192.168.100.0/24"
+
+            Leave empty for IPv6-only subnets.
+        ipv6_cidr:
+          type: string
+          description: |-
+            IPv6 CIDR block for this subnet. Optional for IPv4-only subnets.
+
+            Must be valid CIDR notation and a subset of the parent VirtualNetwork.spec.ipv6_cidr. Validation enforced
+            at service layer. The CIDR block must not overlap with other Subnets within the same VirtualNetwork.
+
+            Example: "2001:db8::/64", "fd00:1234::/64"
+
+            Leave empty for IPv4-only subnets.
+      description: |-
+        Defines the desired configuration for a Subnet.
+
+        The spec contains user-specified parameters that define how the subnet should be configured. These fields
+        follow a declarative model where users specify the desired state and the system reconciles to match it.
+    v1SubnetState:
+      type: string
+      description: |-
+        Lifecycle states for Subnet resources.
+
+        State transitions typically follow: UNSPECIFIED -> PENDING -> READY, with FAILED as a terminal error state
+        that may require user intervention or resource recreation.
+
+         - SUBNET_STATE_UNSPECIFIED: State is unknown or has not been determined yet. This is the default state before initialization.
+         - SUBNET_STATE_PENDING: The subnet is being initialized and is not ready for use yet.
+
+        During this state, the system is:
+        - Validating that the parent VirtualNetwork exists and is in READY state
+        - Validating CIDR blocks (format, subset of parent, no overlaps)
+        - Allocating IP address space within the parent VirtualNetwork
+        - Configuring subnet routing and network policies
+
+        Compute instances cannot be attached to subnets in PENDING state.
+         - SUBNET_STATE_READY: The subnet is fully operational and ready for compute instances to attach.
+
+        In this state:
+        - CIDR blocks are allocated and validated
+        - Parent VirtualNetwork is in READY state
+        - Subnet routing is configured
+        - Compute instances can be created and attached
+        - IP address allocation is active
+         - SUBNET_STATE_FAILED: The subnet has encountered an error and is unusable.
+
+        Common failure reasons include:
+        - Invalid CIDR notation
+        - CIDR block is not a subset of parent VirtualNetwork CIDR
+        - CIDR block overlaps with existing subnets in the same VirtualNetwork
+        - Parent VirtualNetwork not found
+        - Parent VirtualNetwork not in READY state
+        - Network configuration error
+
+        The status.message field will contain specific error details. Failed subnets typically require deletion
+        and recreation with corrected parameters.
+      default: SUBNET_STATE_UNSPECIFIED
+      enum:
+      - SUBNET_STATE_UNSPECIFIED
+      - SUBNET_STATE_PENDING
+      - SUBNET_STATE_READY
+      - SUBNET_STATE_FAILED
+    v1SubnetStatus:
+      type: object
+      properties:
+        state:
+          $ref: "#/components/schemas/v1SubnetState"
+        message:
+          type: string
+          description: |-
+            Human-readable message providing additional details about the current state.
+
+            For PENDING state, this might contain progress information like "Validating CIDR blocks" or
+            "Configuring subnet routing".
+
+            For FAILED state, contains error details like:
+            - "CIDR overlaps with existing subnet"
+            - "Parent VirtualNetwork not found"
+            - "CIDR is not a subset of parent VirtualNetwork CIDR"
+            - "Invalid CIDR notation"
+            - "Parent VirtualNetwork not in READY state"
+
+            For READY state, this is typically empty or contains confirmation like "Subnet ready for compute instances".
+      description: |-
+        Represents the current operational state of a Subnet.
+
+        Status is system-provided and read-only. Users cannot modify status fields directly; the system updates them
+        based on the reconciliation of the spec.
+    v1SubnetsCreateResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1Subnet"
+    v1SubnetsDeleteResponse:
+      type: object
+    v1SubnetsGetResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1Subnet"
+    v1SubnetsListResponse:
+      type: object
+      properties:
+        size:
+          type: integer
+          description: |-
+            Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter
+            of the request if there are not enough items, or if the system decides that returning that number of items isn't
+            feasible or convenient for performance reasons.
+          format: int32
+        total:
+          type: integer
+          description: |-
+            Total number of items of the collection that match the search criteria, regardless of the number of results
+            requested with the `limit` parameter.
+          format: int32
+        items:
+          type: array
+          description: List of results.
+          items:
+            $ref: "#/components/schemas/v1Subnet"
+    v1SubnetsUpdateResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1Subnet"
+    v1VirtualNetwork:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the virtual network.
+        metadata:
+          $ref: "#/components/schemas/v1Metadata"
+        spec:
+          $ref: "#/components/schemas/v1VirtualNetworkSpec"
+        status:
+          $ref: "#/components/schemas/v1VirtualNetworkStatus"
+      description: |-
+        Represents a tenant-isolated virtual network.
+
+        VirtualNetwork provides network isolation for compute instances within a region. Each VirtualNetwork is backed
+        by a specific NetworkClass implementation strategy (e.g., "udn-net" for User-Defined Networks, "phys-net" for
+        physical network infrastructure).
+
+        VirtualNetworks support flexible IP addressing:
+        - IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty
+        - IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty
+        - Dual-stack: Set both ipv4_cidr and ipv6_cidr
+
+        The selected NetworkClass must support the requested IP addressing mode via its capabilities.
+
+        Tenant isolation is enforced via the standard shared.v1.Metadata tenants field. VirtualNetworks are scoped to
+        a single region and cannot span multiple regions.
+    v1VirtualNetworkCapabilities:
+      type: object
+      properties:
+        enable_ipv4:
+          type: boolean
+          description: Whether IPv4 is enabled for this network. Should be true when
+            ipv4_cidr is set.
+        enable_ipv6:
+          type: boolean
+          description: Whether IPv6 is enabled for this network. Should be true when
+            ipv6_cidr is set.
+        enable_dual_stack:
+          type: boolean
+          description: |-
+            Whether dual-stack mode (both IPv4 and IPv6) is enabled. Should be true when both ipv4_cidr and ipv6_cidr
+            are set.
+      description: |-
+        Describes the IP addressing capabilities requested for a VirtualNetwork.
+
+        These flags must be compatible with the selected NetworkClass.capabilities. For example, if enable_dual_stack
+        is true, the selected NetworkClass must have supports_dual_stack set to true.
+    v1VirtualNetworkSpec:
+      type: object
+      properties:
+        region:
+          type: string
+          description: |-
+            Region where the network is created. This is required and immutable after creation.
+
+            VirtualNetworks are region-scoped resources and cannot span multiple regions. Compute instances can only
+            attach to VirtualNetworks in the same region.
+
+            Example: "us-east-1", "eu-west-2"
+        network_class:
+          type: string
+          description: |-
+            NetworkClass implementation strategy to use for this network.
+
+            This references the `implementation_strategy` field of a NetworkClass resource. The selected NetworkClass
+            determines the underlying network backend (e.g., "udn-net", "phys-net") and the available capabilities.
+
+            The NetworkClass must support the requested IP addressing capabilities (IPv4, IPv6, or dual-stack) specified
+            via the capabilities field.
+
+            This field is required and immutable after creation.
+
+            Example: "udn-net", "phys-net", "ovn-kubernetes"
+        ipv4_cidr:
+          type: string
+          description: |-
+            IPv4 CIDR block for this network. Optional for IPv6-only networks.
+
+            Must be valid CIDR notation. Validation enforced at service layer.
+            The CIDR block should be appropriately sized for the expected number of compute instances.
+
+            Example: "10.0.0.0/16", "192.168.0.0/24"
+
+            Leave empty when creating an IPv6-only network.
+        ipv6_cidr:
+          type: string
+          description: |-
+            IPv6 CIDR block for this network. Optional for IPv4-only networks.
+
+            Must be valid CIDR notation. Validation enforced at service layer.
+            IPv6 addresses should follow standard allocation practices for tenant networks.
+
+            Example: "2001:db8::/48", "fd00::/64"
+
+            Leave empty when creating an IPv4-only network.
+        capabilities:
+          $ref: "#/components/schemas/v1VirtualNetworkCapabilities"
+      description: |-
+        Defines the desired configuration for a VirtualNetwork.
+
+        The spec contains user-specified parameters that define how the network should be configured. These fields
+        follow a declarative model where users specify the desired state and the system reconciles to match it.
+    v1VirtualNetworkState:
+      type: string
+      description: |-
+        Lifecycle states for VirtualNetwork resources.
+
+        State transitions typically follow: UNSPECIFIED -> PENDING -> READY, with FAILED as a terminal error state
+        that may require user intervention or resource recreation.
+
+         - VIRTUAL_NETWORK_STATE_UNSPECIFIED: State is unknown or has not been determined yet. This is the default state before initialization.
+         - VIRTUAL_NETWORK_STATE_PENDING: The virtual network is being initialized and is not ready for use yet.
+
+        During this state, the system is:
+        - Validating CIDR blocks
+        - Checking NetworkClass compatibility
+        - Allocating IP address space
+        - Configuring the network backend
+
+        Compute instances cannot be attached to networks in PENDING state.
+         - VIRTUAL_NETWORK_STATE_READY: The virtual network is fully operational and ready for compute instances to attach.
+
+        In this state:
+        - CIDR blocks are allocated and configured
+        - Network backend is ready
+        - Compute instances can be created and attached
+        - Network isolation and routing are active
+         - VIRTUAL_NETWORK_STATE_FAILED: The virtual network has encountered an error and is unusable.
+
+        Common failure reasons include:
+        - Invalid CIDR notation
+        - CIDR block conflicts with existing networks
+        - NetworkClass does not support requested capabilities (e.g., dual-stack not supported)
+        - NetworkClass is not in READY state
+        - Network backend configuration error
+
+        The status.message field will contain specific error details. Failed networks typically require deletion
+        and recreation with corrected parameters.
+      default: VIRTUAL_NETWORK_STATE_UNSPECIFIED
+      enum:
+      - VIRTUAL_NETWORK_STATE_UNSPECIFIED
+      - VIRTUAL_NETWORK_STATE_PENDING
+      - VIRTUAL_NETWORK_STATE_READY
+      - VIRTUAL_NETWORK_STATE_FAILED
+    v1VirtualNetworkStatus:
+      type: object
+      properties:
+        state:
+          $ref: "#/components/schemas/v1VirtualNetworkState"
+        message:
+          type: string
+          description: |-
+            Human-readable message providing additional details about the current state.
+
+            For PENDING state, this might contain progress information like "Allocating IP address space" or
+            "Configuring network backend".
+
+            For FAILED state, this contains error details explaining what went wrong, such as "Invalid CIDR range" or
+            "NetworkClass does not support dual-stack".
+
+            For READY state, this is typically empty or contains confirmation like "Network ready for compute instances".
+      description: |-
+        Represents the current operational state of a VirtualNetwork.
+
+        Status is system-provided and read-only. Users cannot modify status fields directly; the system updates them
+        based on the reconciliation of the spec.
+    v1VirtualNetworksCreateResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1VirtualNetwork"
+    v1VirtualNetworksDeleteResponse:
+      type: object
+    v1VirtualNetworksGetResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1VirtualNetwork"
+    v1VirtualNetworksListResponse:
+      type: object
+      properties:
+        size:
+          type: integer
+          description: |-
+            Actual number of items returned. Note that this may be smaller than the value requested in the `limit` parameter
+            of the request if there are not enough items, or if the system decides that returning that number of items isn't
+            feasible or convenient for performance reasons.
+          format: int32
+        total:
+          type: integer
+          description: |-
+            Total number of items of the collection that match the search criteria, regardless of the number of results
+            requested with the `limit` parameter.
+          format: int32
+        items:
+          type: array
+          description: List of results.
+          items:
+            $ref: "#/components/schemas/v1VirtualNetwork"
+    v1VirtualNetworksUpdateResponse:
+      type: object
+      properties:
+        object:
+          $ref: "#/components/schemas/v1VirtualNetwork"
     v1EventsWatchResponseStreamResult:
       title: v1EventsWatchResponseStreamResult
       type: object
@@ -3404,4 +4981,127 @@ components:
 
         The `spec` contains the desired details, and may be modified by the user. The `status` contains the current status of
         the host, is provided by the system and can't be modified by the user.
+    network_classes_object_id_body:
+      type: object
+      properties:
+        metadata:
+          $ref: "#/components/schemas/v1Metadata"
+        title:
+          type: string
+          description: |-
+            Human friendly short description of the network class, only a few words, suitable for displaying in one single
+            line on a UI or CLI. For example: "UDN Network" or "Physical Network".
+        description:
+          type: string
+          description: |-
+            Human friendly long description of the network class, using Markdown format. This should explain the
+            characteristics of networks created using this class, including performance characteristics, isolation
+            guarantees, and any limitations or requirements.
+        implementation_strategy:
+          type: string
+          description: |-
+            Implementation strategy identifier for this network class. This is the discriminator that VirtualNetwork
+            resources use to select which network backend to use. For example: "udn-net", "phys-net", "ovn-kubernetes".
+
+            This value is system-defined and immutable once the NetworkClass is created.
+        constraints:
+          $ref: "#/components/schemas/v1NetworkClassConstraints"
+        capabilities:
+          $ref: "#/components/schemas/v1NetworkClassCapabilities"
+        status:
+          $ref: "#/components/schemas/v1NetworkClassStatus"
+      description: |-
+        Describes a network implementation strategy available for creating virtual networks.
+
+        NetworkClass represents a specific network backend implementation that VirtualNetworks can use. For example,
+        there could be a network class `udn-net` to describe networks implemented using User-Defined Networks in
+        Kubernetes, and another `phys-net` for networks backed by physical network infrastructure.
+
+        This is similar to the _storage class_ concept used by Kubernetes for persistent volumes, or the _instance type_
+        concept used by cloud providers for compute resources.
+
+        Users query available NetworkClasses to discover which network implementation strategies they can choose when
+        creating VirtualNetworks. The `implementation_strategy` field is the key identifier that VirtualNetwork resources
+        reference to select their network backend.
+    security_groups_object_id_body:
+      type: object
+      properties:
+        metadata:
+          $ref: "#/components/schemas/v1Metadata"
+        spec:
+          $ref: "#/components/schemas/v1SecurityGroupSpec"
+        status:
+          $ref: "#/components/schemas/v1SecurityGroupStatus"
+      description: |-
+        Represents a virtual firewall controlling network traffic for compute instances.
+
+        SecurityGroup acts as a stateful firewall that controls inbound (ingress) and outbound (egress) traffic for
+        compute instances within a VirtualNetwork. Rules are stateful, meaning return traffic is automatically allowed
+        for established connections.
+
+        SecurityGroups follow a default-deny policy: if no rules match, traffic is blocked. This ensures secure-by-default
+        behavior where only explicitly allowed traffic can pass through.
+
+        SecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that
+        network. They cannot be used across different VirtualNetworks.
+
+        The parent VirtualNetwork relationship is established via metadata.annotations using the 'osac.io/owner-reference'
+        key with the VirtualNetwork ID as the value. This enables proper resource hierarchy for garbage collection - when
+        a VirtualNetwork is deleted, all associated SecurityGroups are automatically cleaned up.
+
+        Design follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native
+        multi-tenant environments.
+    subnets_object_id_body:
+      type: object
+      properties:
+        metadata:
+          $ref: "#/components/schemas/v1Metadata"
+        spec:
+          $ref: "#/components/schemas/v1SubnetSpec"
+        status:
+          $ref: "#/components/schemas/v1SubnetStatus"
+      description: |-
+        Represents a subdivision of a VirtualNetwork for organizing compute instances.
+
+        Subnets subdivide VirtualNetwork IP address space into smaller, manageable segments. Each Subnet belongs to exactly
+        one parent VirtualNetwork and must be in the same region. Initially, the system supports a 1:1 mapping between
+        VirtualNetwork and Subnet (one subnet per network), but the schema is designed to support multiple subnets per
+        VirtualNetwork in the future.
+
+        Subnets support flexible IP addressing to match the parent VirtualNetwork's capabilities:
+        - IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty
+        - IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty
+        - Dual-stack: Set both ipv4_cidr and ipv6_cidr
+
+        The parent VirtualNetwork relationship should be specified via metadata.annotations using the 'osac.io/owner-reference'
+        key with the VirtualNetwork ID as the value. This establishes resource hierarchy for garbage collection, ensuring
+        that Subnets are automatically cleaned up when their parent VirtualNetwork is deleted.
+
+        CIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the
+        parent VirtualNetwork's CIDR. Validation is enforced at the service layer.
+    virtual_networks_object_id_body:
+      type: object
+      properties:
+        metadata:
+          $ref: "#/components/schemas/v1Metadata"
+        spec:
+          $ref: "#/components/schemas/v1VirtualNetworkSpec"
+        status:
+          $ref: "#/components/schemas/v1VirtualNetworkStatus"
+      description: |-
+        Represents a tenant-isolated virtual network.
+
+        VirtualNetwork provides network isolation for compute instances within a region. Each VirtualNetwork is backed
+        by a specific NetworkClass implementation strategy (e.g., "udn-net" for User-Defined Networks, "phys-net" for
+        physical network infrastructure).
+
+        VirtualNetworks support flexible IP addressing:
+        - IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty
+        - IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty
+        - Dual-stack: Set both ipv4_cidr and ipv6_cidr
+
+        The selected NetworkClass must support the requested IP addressing mode via its capabilities.
+
+        Tenant isolation is enforced via the standard shared.v1.Metadata tenants field. VirtualNetworks are scoped to
+        a single region and cannot span multiple regions.
 x-original-swagger-version: "2.0"
