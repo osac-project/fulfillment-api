@@ -4243,6 +4243,8 @@ components:
         Design follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native
         multi-tenant environments.
     v1SecurityGroupSpec:
+      required:
+      - virtual_network
       type: object
       properties:
         virtual_network:
@@ -4681,6 +4683,9 @@ components:
         These flags must be compatible with the selected NetworkClass.capabilities. For example, if enable_dual_stack
         is true, the selected NetworkClass must have supports_dual_stack set to true.
     v1VirtualNetworkSpec:
+      required:
+      - network_class
+      - region
       type: object
       properties:
         region:

@@ -3813,7 +3813,10 @@
           "description": "List of rules controlling outbound traffic from compute instances.\n\nRules are evaluated in order; first matching rule determines whether traffic is allowed. If no rules\nmatch, traffic is denied by default.\n\nExample: Allow all outbound traffic, or restrict to specific destinations"
         }
       },
-      "description": "Defines the desired configuration for a SecurityGroup.\n\nThe spec contains user-specified firewall rules that define allowed network traffic. Rules are evaluated\nin order, and the first matching rule determines whether traffic is allowed. If no rules match, traffic\nis denied by default."
+      "description": "Defines the desired configuration for a SecurityGroup.\n\nThe spec contains user-specified firewall rules that define allowed network traffic. Rules are evaluated\nin order, and the first matching rule determines whether traffic is allowed. If no rules match, traffic\nis denied by default.",
+      "required": [
+        "virtual_network"
+      ]
     },
     "v1SecurityGroupState": {
       "type": "string",
@@ -4097,7 +4100,11 @@
           "description": "Requested network capabilities for this VirtualNetwork.\n\nThese capabilities must be compatible with the selected NetworkClass.capabilities. The system will validate\nthat the NetworkClass supports the requested addressing mode before creating the network."
         }
       },
-      "description": "Defines the desired configuration for a VirtualNetwork.\n\nThe spec contains user-specified parameters that define how the network should be configured. These fields\nfollow a declarative model where users specify the desired state and the system reconciles to match it."
+      "description": "Defines the desired configuration for a VirtualNetwork.\n\nThe spec contains user-specified parameters that define how the network should be configured. These fields\nfollow a declarative model where users specify the desired state and the system reconciles to match it.",
+      "required": [
+        "region",
+        "network_class"
+      ]
     },
     "v1VirtualNetworkState": {
       "type": "string",

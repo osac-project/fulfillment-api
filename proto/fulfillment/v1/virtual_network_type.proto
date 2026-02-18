@@ -15,6 +15,7 @@ syntax = "proto3";
 
 package fulfillment.v1;
 
+import "google/api/field_behavior.proto";
 import "shared/v1/metadata_type.proto";
 
 // Represents a tenant-isolated virtual network.
@@ -57,7 +58,10 @@ message VirtualNetworkSpec {
   // attach to VirtualNetworks in the same region.
   //
   // Example: "us-east-1", "eu-west-2"
-  string region = 1;
+  string region = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.field_behavior) = IMMUTABLE
+  ];
 
   // NetworkClass implementation strategy to use for this network.
   //
@@ -70,7 +74,10 @@ message VirtualNetworkSpec {
   // This field is required and immutable after creation.
   //
   // Example: "udn-net", "phys-net", "ovn-kubernetes"
-  string network_class = 2;
+  string network_class = 2 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.field_behavior) = IMMUTABLE
+  ];
 
   // IPv4 CIDR block for this network. Optional for IPv6-only networks.
   //
