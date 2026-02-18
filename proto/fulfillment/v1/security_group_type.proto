@@ -15,6 +15,7 @@ syntax = "proto3";
 
 package fulfillment.v1;
 
+import "google/api/field_behavior.proto";
 import "shared/v1/metadata_type.proto";
 
 // Represents a virtual firewall controlling network traffic for compute instances.
@@ -66,7 +67,10 @@ message SecurityGroupSpec {
   // and immutable after creation.
   //
   // Example: "vnet-12345abc"
-  string virtual_network = 1;
+  string virtual_network = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.field_behavior) = IMMUTABLE
+  ];
 
   // List of rules controlling inbound traffic to compute instances.
   //
