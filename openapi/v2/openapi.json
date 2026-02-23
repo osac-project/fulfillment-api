@@ -2077,10 +2077,11 @@
         "COMPUTE_INSTANCE_STATE_STARTING",
         "COMPUTE_INSTANCE_STATE_RUNNING",
         "COMPUTE_INSTANCE_STATE_FAILED",
-        "COMPUTE_INSTANCE_STATE_DELETING"
+        "COMPUTE_INSTANCE_STATE_DELETING",
+        "COMPUTE_INSTANCE_STATE_UPDATING"
       ],
       "default": "COMPUTE_INSTANCE_STATE_UNSPECIFIED",
-      "description": "Represents the overall state of a compute instance.\n\n - COMPUTE_INSTANCE_STATE_UNSPECIFIED: Unspecified indicates that the state is unknown.\n - COMPUTE_INSTANCE_STATE_STARTING: Indicates that the compute instance is starting.\n - COMPUTE_INSTANCE_STATE_RUNNING: Indicates that the compute instance is running.\n - COMPUTE_INSTANCE_STATE_FAILED: Indicates that the compute instance is unusable.\n - COMPUTE_INSTANCE_STATE_DELETING: Indicates that the compute instance is being deleted."
+      "description": "Represents the overall state of a compute instance.\n\n - COMPUTE_INSTANCE_STATE_UNSPECIFIED: Unspecified indicates that the state is unknown.\n - COMPUTE_INSTANCE_STATE_STARTING: Indicates that the compute instance is starting.\n - COMPUTE_INSTANCE_STATE_RUNNING: Indicates that the compute instance is running.\n - COMPUTE_INSTANCE_STATE_FAILED: Indicates that the compute instance is unusable.\n - COMPUTE_INSTANCE_STATE_DELETING: Indicates that the compute instance is being deleted.\n - COMPUTE_INSTANCE_STATE_UPDATING: Indicates that the compute instance is being updated."
     },
     "v1ComputeInstanceStatus": {
       "type": "object",
