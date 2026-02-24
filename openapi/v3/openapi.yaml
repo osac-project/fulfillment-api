@@ -2344,6 +2344,27 @@ components:
       - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED
       - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS
       - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED
+    v1ComputeInstanceDisk:
+      type: object
+      properties:
+        size_gib:
+          type: integer
+          description: Disk size in GiB.
+          format: int32
+        storage_class:
+          type: string
+          description: Storage class for the disk.
+      description: Contains the disk configuration for a compute instance.
+    v1ComputeInstanceImage:
+      type: object
+      properties:
+        source_type:
+          type: string
+          description: Image source type (e.g. "registry").
+        source_ref:
+          type: string
+          description: Image reference (e.g. OCI image URL).
+      description: Contains the image configuration for a compute instance.
     v1ComputeInstanceSpec:
       type: object
       properties:
@@ -2421,6 +2442,32 @@ components:
                  }
                }
           format: date-time
+        image:
+          $ref: "#/components/schemas/v1ComputeInstanceImage"
+        cores:
+          type: integer
+          description: Number of CPU cores.
+          format: int32
+        memory_gib:
+          type: integer
+          description: Memory size in GiB.
+          format: int32
+        ssh_key:
+          type: string
+          description: SSH public key.
+        boot_disk:
+          $ref: "#/components/schemas/v1ComputeInstanceDisk"
+        additional_disks:
+          type: array
+          description: Additional disk configurations.
+          items:
+            $ref: "#/components/schemas/v1ComputeInstanceDisk"
+        run_strategy:
+          type: string
+          description: Run strategy for the compute instance (e.g. "Always" or "Halted").
+        user_data_secret_ref:
+          type: string
+          description: Name of the secret containing cloud-init user data.
       description: The spec contains the details of a compute instance as desired
         by the user.
     v1ComputeInstanceState:

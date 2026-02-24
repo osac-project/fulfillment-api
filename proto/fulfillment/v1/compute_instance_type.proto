@@ -33,6 +33,24 @@ message ComputeInstance {
   ComputeInstanceStatus status = 4;
 }
 
+// Contains the image configuration for a compute instance.
+message ComputeInstanceImage {
+  // Image source type (e.g. "registry").
+  string source_type = 1;
+
+  // Image reference (e.g. OCI image URL).
+  string source_ref = 2;
+}
+
+// Contains the disk configuration for a compute instance.
+message ComputeInstanceDisk {
+  // Disk size in GiB.
+  int32 size_gib = 1;
+
+  // Storage class for the disk.
+  optional string storage_class = 2;
+}
+
 // The spec contains the details of a compute instance as desired by the user.
 message ComputeInstanceSpec {
   // Reference to the compute instance template.
@@ -103,6 +121,30 @@ message ComputeInstanceSpec {
   //    }
   //
   optional google.protobuf.Timestamp restart_requested_at = 3;
+
+  // VM image configuration.
+  optional ComputeInstanceImage image = 4;
+
+  // Number of CPU cores.
+  optional int32 cores = 5;
+
+  // Memory size in GiB.
+  optional int32 memory_gib = 6;
+
+  // SSH public key.
+  optional string ssh_key = 7;
+
+  // Boot disk configuration.
+  optional ComputeInstanceDisk boot_disk = 8;
+
+  // Additional disk configurations.
+  repeated ComputeInstanceDisk additional_disks = 9;
+
+  // Run strategy for the compute instance (e.g. "Always" or "Halted").
+  optional string run_strategy = 10;
+
+  // Name of the secret containing cloud-init user data.
+  optional string user_data_secret_ref = 11;
 }
 
 // The status contains the details of the compute instance provided by the system.
