@@ -252,10 +252,15 @@ enum ComputeInstanceConditionType {
   // This will never be appear in the `spec.conditions` field of a compute instance.
   COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED = 0;
 
-  // Indicates that the compute instance isn't completely ready yet.
+  // Indicates that the compute instance configuration has been applied by the provisioning provider.
   //
-  // Currently there are no `reason` values defined.
-  COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING = 1;
+  // When `status` is `TRUE`, the configuration currently described by the compute instance spec
+  // has been successfully applied. This is determined by comparing `status.desiredConfigVersion`
+  // with `status.reconciledConfigVersion`.
+  //
+  // When `status` is `FALSE`, configuration is currently being applied (e.g. during initial
+  // provisioning or after a spec update).
+  COMPUTE_INSTANCE_CONDITION_TYPE_CONFIGURATION_APPLIED = 1;
 
   // Indicates that the compute instance is available.
   //
