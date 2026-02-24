@@ -220,14 +220,6 @@ enum ComputeInstanceConditionType {
   // Currently there are no `reason` values defined.
   COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE = 2;
 
-  // Indicates that the compute instance is unusable.
-  //
-  // Currently there are no `reason` values defined.
-  COMPUTE_INSTANCE_CONDITION_TYPE_FAILED = 3;
-
-  // Indicates that the compute instance is degraded.
-  COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED = 4;
-
   // Indicates that a restart is in progress.
   //
   // When `status` is `TRUE`, it means a restart is currently in progress.
@@ -237,7 +229,7 @@ enum ComputeInstanceConditionType {
   // - `RestartInProgress`: The restart has been initiated.
   //
   // When `status` is `FALSE`, no restart is currently in progress.
-  COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS = 5;
+  COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS = 3;
 
   // Indicates that a restart request has failed.
   //
@@ -246,5 +238,5 @@ enum ComputeInstanceConditionType {
   // If the issue persists, please contact your administrator.
   //
   // When `status` is `FALSE`, there is no restart failure.
-  COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED = 6;
+  COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED = 4;
 }

@@ -2315,10 +2315,6 @@ components:
          - COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE: Indicates that the compute instance is available.
 
         Currently there are no `reason` values defined.
-         - COMPUTE_INSTANCE_CONDITION_TYPE_FAILED: Indicates that the compute instance is unusable.
-
-        Currently there are no `reason` values defined.
-         - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED: Indicates that the compute instance is degraded.
          - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS: Indicates that a restart is in progress.
 
         When `status` is `TRUE`, it means a restart is currently in progress.
@@ -2340,8 +2336,6 @@ components:
       - COMPUTE_INSTANCE_CONDITION_TYPE_UNSPECIFIED
       - COMPUTE_INSTANCE_CONDITION_TYPE_PROGRESSING
       - COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE
-      - COMPUTE_INSTANCE_CONDITION_TYPE_FAILED
-      - COMPUTE_INSTANCE_CONDITION_TYPE_DEGRADED
       - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_IN_PROGRESS
       - COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED
     v1ComputeInstanceSpec:
