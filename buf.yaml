@@ -26,7 +26,7 @@ breaking:
 
 modules:
 - path: proto
-  name: buf.build/innabox/fulfillment-api
+  name: buf.build/osac-project/fulfillment-api
 
 deps:
 - buf.build/googleapis/googleapis
