@@ -164,19 +164,32 @@ message ComputeInstanceStatus {
   //        "state": "COMPUTE_INSTANCE_STATE_RUNNING",
   //        "conditions": [
   //          {
+  //            "type": "COMPUTE_INSTANCE_CONDITION_TYPE_PROVISIONED",
+  //            "status": "CONDITION_STATUS_TRUE",
+  //            "last_transition_time": "2025-03-12 20:10:01+00:00"
+  //          },
+  //          {
+  //            "type": "COMPUTE_INSTANCE_CONDITION_TYPE_CONFIGURATION_APPLIED",
+  //            "status": "CONDITION_STATUS_TRUE",
+  //            "last_transition_time": "2025-03-12 20:14:22+00:00"
+  //          },
+  //          {
   //            "type": "COMPUTE_INSTANCE_CONDITION_TYPE_AVAILABLE",
   //            "status": "CONDITION_STATUS_TRUE",
-  //            "last_transition_time": "2025-03-12 20:15:59+00:00",
-  //            "message": "The compute instance is available",
+  //            "last_transition_time": "2025-03-12 20:15:59+00:00"
   //          }
   //        ]
   //      }
   //    }
   //
-  // In this example the `AVAILABLE` condition is true. That tells us that the compute instance is available via the IP address
-  // provided in the `status.ip_address` field.
+  // In this example the `PROVISIONED` condition is true (infrastructure is allocated), `CONFIGURATION_APPLIED` is true
+  // (the desired configuration has been applied by the provisioning provider), and `AVAILABLE` is true (the compute
+  // instance is reachable via the IP address in `status.ip_address`).
   //
-  // Note that in this example, to make it shorter, only one condition appears. In general all the conditions (except
+  // The `state` field reflects the VM power state as reported by the hypervisor. Possible states include
+  // `STARTING`, `RUNNING`, `FAILED`, `DELETING`, `STOPPING`, `STOPPED`, and `PAUSED`.
+  //
+  // Note that in this example, to make it shorter, only three conditions appear. In general all the conditions (except
   // `UNSPECIFIED`) will appear exactly once.
   //
   // Check the documentation of the values of the `ComputeInstanceConditionType` enumerated type to see possible conditions and
@@ -221,6 +234,15 @@ enum ComputeInstanceState {
 
   // Indicates that the compute instance is being deleted.
   COMPUTE_INSTANCE_STATE_DELETING = 4;
+
+  // Indicates that the compute instance is in the process of being stopped.
+  COMPUTE_INSTANCE_STATE_STOPPING = 5;
+
+  // Indicates that the compute instance is stopped.
+  COMPUTE_INSTANCE_STATE_STOPPED = 6;
+
+  // Indicates that the compute instance is paused.
+  COMPUTE_INSTANCE_STATE_PAUSED = 7;
 }
 
 // Contains the details of a condition that describes the status of a compute instance.
@@ -286,4 +308,21 @@ enum ComputeInstanceConditionType {
   //
   // When `status` is `FALSE`, there is no restart failure.
   COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_FAILED = 4;
+
+  // Indicates that the infrastructure resources (compute, storage) have been allocated.
+  //
+  // When `status` is `TRUE`, the KubeVirt VirtualMachine has been created and
+  // infrastructure resources are allocated.
+  //
+  // When `status` is `FALSE`, infrastructure provisioning is in progress.
+  COMPUTE_INSTANCE_CONDITION_TYPE_PROVISIONED = 5;
+
+  // Indicates that the compute instance requires a restart for configuration changes
+  // to take effect.
+  //
+  // When `status` is `TRUE`, configuration changes have been applied to the VM spec
+  // but require a restart to take effect (they cannot be live-propagated).
+  //
+  // When `status` is `FALSE`, no restart is required.
+  COMPUTE_INSTANCE_CONDITION_TYPE_RESTART_REQUIRED = 6;
 }
