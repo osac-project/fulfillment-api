@@ -4077,6 +4077,16 @@ components:
           description: Names of the creators of the object.
           items:
             type: string
+        finalizers:
+          type: array
+          description: |-
+            Finalizers contains a list of identifiers that must be cleared before the object can be deleted.
+
+            This field is used to implement lifecycle hooks and ensure that cleanup operations complete
+            before an object is permanently removed. When deletion_timestamp is set, the object remains
+            until all finalizers are removed.
+          items:
+            type: string
         name:
           type: string
           description: |-
@@ -4145,15 +4155,6 @@ components:
             Human friendly long description of the network class, using Markdown format. This should explain the
             characteristics of networks created using this class, including performance characteristics, isolation
             guarantees, and any limitations or requirements.
-        implementation_strategy:
-          type: string
-          description: |-
-            Implementation strategy identifier for this network class. This is the discriminator that VirtualNetwork
-            resources use to select which network backend to use. For example: "udn-net", "phys-net", "ovn-kubernetes".
-
-            This value is system-defined and immutable once the NetworkClass is created.
-        constraints:
-          $ref: "#/components/schemas/v1NetworkClassConstraints"
         capabilities:
           $ref: "#/components/schemas/v1NetworkClassCapabilities"
         status:
@@ -4188,16 +4189,6 @@ components:
         Describes the capabilities supported by a NetworkClass.
 
         These fields indicate what network features are available when using this class for VirtualNetwork creation.
-    v1NetworkClassConstraints:
-      type: object
-      description: |-
-        Defines configuration constraints for a specific NetworkClass implementation.
-
-        This message contains implementation-specific parameters that may be required or optional when creating
-        VirtualNetworks using this class. Currently minimal to allow for future extension.
-
-        Reserved for future implementation-specific constraint fields.
-         Examples might include: required VLAN ranges, MTU constraints, required subnet sizes, etc.
     v1NetworkClassState:
       type: string
       description: |-
@@ -4316,12 +4307,7 @@ components:
         SecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that
         network. They cannot be used across different VirtualNetworks.
 
-        The parent VirtualNetwork relationship is established via metadata.annotations using the 'osac.io/owner-reference'
-        key with the VirtualNetwork ID as the value. This enables proper resource hierarchy for garbage collection - when
-        a VirtualNetwork is deleted, all associated SecurityGroups are automatically cleaned up.
-
-        Design follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native
-        multi-tenant environments.
+        The parent VirtualNetwork relationship is specified via the spec.virtual_network field.
     v1SecurityGroupSpec:
       required:
       - virtual_network
@@ -4554,9 +4540,7 @@ components:
         - IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty
         - Dual-stack: Set both ipv4_cidr and ipv6_cidr
 
-        The parent VirtualNetwork relationship should be specified via metadata.annotations using the 'osac.io/owner-reference'
-        key with the VirtualNetwork ID as the value. This establishes resource hierarchy for garbage collection, ensuring
-        that Subnets are automatically cleaned up when their parent VirtualNetwork is deleted.
+        The parent VirtualNetwork relationship is specified via the spec.virtual_network field.
 
         CIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the
         parent VirtualNetwork's CIDR. Validation is enforced at the service layer.
@@ -5084,15 +5068,6 @@ components:
             Human friendly long description of the network class, using Markdown format. This should explain the
             characteristics of networks created using this class, including performance characteristics, isolation
             guarantees, and any limitations or requirements.
-        implementation_strategy:
-          type: string
-          description: |-
-            Implementation strategy identifier for this network class. This is the discriminator that VirtualNetwork
-            resources use to select which network backend to use. For example: "udn-net", "phys-net", "ovn-kubernetes".
-
-            This value is system-defined and immutable once the NetworkClass is created.
-        constraints:
-          $ref: "#/components/schemas/v1NetworkClassConstraints"
         capabilities:
           $ref: "#/components/schemas/v1NetworkClassCapabilities"
         status:
@@ -5132,12 +5107,7 @@ components:
         SecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that
         network. They cannot be used across different VirtualNetworks.
 
-        The parent VirtualNetwork relationship is established via metadata.annotations using the 'osac.io/owner-reference'
-        key with the VirtualNetwork ID as the value. This enables proper resource hierarchy for garbage collection - when
-        a VirtualNetwork is deleted, all associated SecurityGroups are automatically cleaned up.
-
-        Design follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native
-        multi-tenant environments.
+        The parent VirtualNetwork relationship is specified via the spec.virtual_network field.
     subnets_object_id_body:
       type: object
       properties:
@@ -5160,9 +5130,7 @@ components:
         - IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty
         - Dual-stack: Set both ipv4_cidr and ipv6_cidr
 
-        The parent VirtualNetwork relationship should be specified via metadata.annotations using the 'osac.io/owner-reference'
-        key with the VirtualNetwork ID as the value. This establishes resource hierarchy for garbage collection, ensuring
-        that Subnets are automatically cleaned up when their parent VirtualNetwork is deleted.
+        The parent VirtualNetwork relationship is specified via the spec.virtual_network field.
 
         CIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the
         parent VirtualNetwork's CIDR. Validation is enforced at the service layer.

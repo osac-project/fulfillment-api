@@ -1788,14 +1788,6 @@
                   "type": "string",
                   "description": "Human friendly long description of the network class, using Markdown format. This should explain the\ncharacteristics of networks created using this class, including performance characteristics, isolation\nguarantees, and any limitations or requirements."
                 },
-                "implementation_strategy": {
-                  "type": "string",
-                  "description": "Implementation strategy identifier for this network class. This is the discriminator that VirtualNetwork\nresources use to select which network backend to use. For example: \"udn-net\", \"phys-net\", \"ovn-kubernetes\".\n\nThis value is system-defined and immutable once the NetworkClass is created."
-                },
-                "constraints": {
-                  "$ref": "#/definitions/v1NetworkClassConstraints",
-                  "description": "Class-specific configuration constraints and options. These define implementation-specific parameters that\nnetworks using this class must or may configure."
-                },
                 "capabilities": {
                   "$ref": "#/definitions/v1NetworkClassCapabilities",
                   "description": "Capabilities that this network class supports. These describe what features are available when using this\nnetwork implementation strategy."
@@ -1995,7 +1987,7 @@
               "properties": {
                 "metadata": {
                   "$ref": "#/definitions/v1Metadata",
-                  "description": "Metadata of the security group, including name, labels, tenants, and timestamps.\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the\n'osac.io/owner-reference' key with the VirtualNetwork ID as the value. This establishes resource\nhierarchy for garbage collection."
+                  "description": "Metadata of the security group, including name, labels, tenants, and timestamps."
                 },
                 "spec": {
                   "$ref": "#/definitions/v1SecurityGroupSpec",
@@ -2006,7 +1998,7 @@
                   "description": "Current state of the security group (system-provided, read-only)."
                 }
               },
-              "description": "Represents a virtual firewall controlling network traffic for compute instances.\n\nSecurityGroup acts as a stateful firewall that controls inbound (ingress) and outbound (egress) traffic for\ncompute instances within a VirtualNetwork. Rules are stateful, meaning return traffic is automatically allowed\nfor established connections.\n\nSecurityGroups follow a default-deny policy: if no rules match, traffic is blocked. This ensures secure-by-default\nbehavior where only explicitly allowed traffic can pass through.\n\nSecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that\nnetwork. They cannot be used across different VirtualNetworks.\n\nThe parent VirtualNetwork relationship is established via metadata.annotations using the 'osac.io/owner-reference'\nkey with the VirtualNetwork ID as the value. This enables proper resource hierarchy for garbage collection - when\na VirtualNetwork is deleted, all associated SecurityGroups are automatically cleaned up.\n\nDesign follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native\nmulti-tenant environments."
+              "description": "Represents a virtual firewall controlling network traffic for compute instances.\n\nSecurityGroup acts as a stateful firewall that controls inbound (ingress) and outbound (egress) traffic for\ncompute instances within a VirtualNetwork. Rules are stateful, meaning return traffic is automatically allowed\nfor established connections.\n\nSecurityGroups follow a default-deny policy: if no rules match, traffic is blocked. This ensures secure-by-default\nbehavior where only explicitly allowed traffic can pass through.\n\nSecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that\nnetwork. They cannot be used across different VirtualNetworks.\n\nThe parent VirtualNetwork relationship is specified via the spec.virtual_network field."
             }
           }
         ],
@@ -2196,7 +2188,7 @@
               "properties": {
                 "metadata": {
                   "$ref": "#/definitions/v1Metadata",
-                  "description": "Metadata of the subnet, including name, labels, tenants, and timestamps.\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the\n'osac.io/owner-reference' key with the VirtualNetwork ID as the value. This establishes resource\nhierarchy for garbage collection."
+                  "description": "Metadata of the subnet, including name, labels, tenants, and timestamps."
                 },
                 "spec": {
                   "$ref": "#/definitions/v1SubnetSpec",
@@ -2207,7 +2199,7 @@
                   "description": "Current state of the subnet (system-provided, read-only)."
                 }
               },
-              "description": "Represents a subdivision of a VirtualNetwork for organizing compute instances.\n\nSubnets subdivide VirtualNetwork IP address space into smaller, manageable segments. Each Subnet belongs to exactly\none parent VirtualNetwork and must be in the same region. Initially, the system supports a 1:1 mapping between\nVirtualNetwork and Subnet (one subnet per network), but the schema is designed to support multiple subnets per\nVirtualNetwork in the future.\n\nSubnets support flexible IP addressing to match the parent VirtualNetwork's capabilities:\n- IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty\n- IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty\n- Dual-stack: Set both ipv4_cidr and ipv6_cidr\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the 'osac.io/owner-reference'\nkey with the VirtualNetwork ID as the value. This establishes resource hierarchy for garbage collection, ensuring\nthat Subnets are automatically cleaned up when their parent VirtualNetwork is deleted.\n\nCIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the\nparent VirtualNetwork's CIDR. Validation is enforced at the service layer."
+              "description": "Represents a subdivision of a VirtualNetwork for organizing compute instances.\n\nSubnets subdivide VirtualNetwork IP address space into smaller, manageable segments. Each Subnet belongs to exactly\none parent VirtualNetwork and must be in the same region. Initially, the system supports a 1:1 mapping between\nVirtualNetwork and Subnet (one subnet per network), but the schema is designed to support multiple subnets per\nVirtualNetwork in the future.\n\nSubnets support flexible IP addressing to match the parent VirtualNetwork's capabilities:\n- IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty\n- IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty\n- Dual-stack: Set both ipv4_cidr and ipv6_cidr\n\nThe parent VirtualNetwork relationship is specified via the spec.virtual_network field.\n\nCIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the\nparent VirtualNetwork's CIDR. Validation is enforced at the service layer."
             }
           }
         ],
@@ -3654,6 +3646,13 @@
           },
           "description": "Names of the creators of the object."
         },
+        "finalizers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Finalizers contains a list of identifiers that must be cleared before the object can be deleted.\n\nThis field is used to implement lifecycle hooks and ensure that cleanup operations complete\nbefore an object is permanently removed. When deletion_timestamp is set, the object remains\nuntil all finalizers are removed."
+        },
         "name": {
           "type": "string",
           "description": "Human friendly name of the object.\n\nHas the same restrictions than DNS labels, as described in RFC 1035:\n\n- Must be between 1 and 63 characters long.\n- Must only contain letters (a-z), digits (0-9) and hyphens (-).\n- It isn't case sensitive.\n\nIt is optional and not unique, so multiple objecs, even created by the same user or tenant, can have the same name."
@@ -3709,14 +3708,6 @@
           "type": "string",
           "description": "Human friendly long description of the network class, using Markdown format. This should explain the\ncharacteristics of networks created using this class, including performance characteristics, isolation\nguarantees, and any limitations or requirements."
         },
-        "implementation_strategy": {
-          "type": "string",
-          "description": "Implementation strategy identifier for this network class. This is the discriminator that VirtualNetwork\nresources use to select which network backend to use. For example: \"udn-net\", \"phys-net\", \"ovn-kubernetes\".\n\nThis value is system-defined and immutable once the NetworkClass is created."
-        },
-        "constraints": {
-          "$ref": "#/definitions/v1NetworkClassConstraints",
-          "description": "Class-specific configuration constraints and options. These define implementation-specific parameters that\nnetworks using this class must or may configure."
-        },
         "capabilities": {
           "$ref": "#/definitions/v1NetworkClassCapabilities",
           "description": "Capabilities that this network class supports. These describe what features are available when using this\nnetwork implementation strategy."
@@ -3745,10 +3736,6 @@
         }
       },
       "description": "Describes the capabilities supported by a NetworkClass.\n\nThese fields indicate what network features are available when using this class for VirtualNetwork creation."
-    },
-    "v1NetworkClassConstraints": {
-      "type": "object",
-      "description": "Defines configuration constraints for a specific NetworkClass implementation.\n\nThis message contains implementation-specific parameters that may be required or optional when creating\nVirtualNetworks using this class. Currently minimal to allow for future extension.\n\nReserved for future implementation-specific constraint fields.\n Examples might include: required VLAN ranges, MTU constraints, required subnet sizes, etc."
     },
     "v1NetworkClassState": {
       "type": "string",
@@ -3846,7 +3833,7 @@
         },
         "metadata": {
           "$ref": "#/definitions/v1Metadata",
-          "description": "Metadata of the security group, including name, labels, tenants, and timestamps.\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the\n'osac.io/owner-reference' key with the VirtualNetwork ID as the value. This establishes resource\nhierarchy for garbage collection."
+          "description": "Metadata of the security group, including name, labels, tenants, and timestamps."
         },
         "spec": {
           "$ref": "#/definitions/v1SecurityGroupSpec",
@@ -3857,7 +3844,7 @@
           "description": "Current state of the security group (system-provided, read-only)."
         }
       },
-      "description": "Represents a virtual firewall controlling network traffic for compute instances.\n\nSecurityGroup acts as a stateful firewall that controls inbound (ingress) and outbound (egress) traffic for\ncompute instances within a VirtualNetwork. Rules are stateful, meaning return traffic is automatically allowed\nfor established connections.\n\nSecurityGroups follow a default-deny policy: if no rules match, traffic is blocked. This ensures secure-by-default\nbehavior where only explicitly allowed traffic can pass through.\n\nSecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that\nnetwork. They cannot be used across different VirtualNetworks.\n\nThe parent VirtualNetwork relationship is established via metadata.annotations using the 'osac.io/owner-reference'\nkey with the VirtualNetwork ID as the value. This enables proper resource hierarchy for garbage collection - when\na VirtualNetwork is deleted, all associated SecurityGroups are automatically cleaned up.\n\nDesign follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native\nmulti-tenant environments."
+      "description": "Represents a virtual firewall controlling network traffic for compute instances.\n\nSecurityGroup acts as a stateful firewall that controls inbound (ingress) and outbound (egress) traffic for\ncompute instances within a VirtualNetwork. Rules are stateful, meaning return traffic is automatically allowed\nfor established connections.\n\nSecurityGroups follow a default-deny policy: if no rules match, traffic is blocked. This ensures secure-by-default\nbehavior where only explicitly allowed traffic can pass through.\n\nSecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that\nnetwork. They cannot be used across different VirtualNetworks.\n\nThe parent VirtualNetwork relationship is specified via the spec.virtual_network field."
     },
     "v1SecurityGroupSpec": {
       "type": "object",
@@ -4000,7 +3987,7 @@
         },
         "metadata": {
           "$ref": "#/definitions/v1Metadata",
-          "description": "Metadata of the subnet, including name, labels, tenants, and timestamps.\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the\n'osac.io/owner-reference' key with the VirtualNetwork ID as the value. This establishes resource\nhierarchy for garbage collection."
+          "description": "Metadata of the subnet, including name, labels, tenants, and timestamps."
         },
         "spec": {
           "$ref": "#/definitions/v1SubnetSpec",
@@ -4011,7 +3998,7 @@
           "description": "Current state of the subnet (system-provided, read-only)."
         }
       },
-      "description": "Represents a subdivision of a VirtualNetwork for organizing compute instances.\n\nSubnets subdivide VirtualNetwork IP address space into smaller, manageable segments. Each Subnet belongs to exactly\none parent VirtualNetwork and must be in the same region. Initially, the system supports a 1:1 mapping between\nVirtualNetwork and Subnet (one subnet per network), but the schema is designed to support multiple subnets per\nVirtualNetwork in the future.\n\nSubnets support flexible IP addressing to match the parent VirtualNetwork's capabilities:\n- IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty\n- IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty\n- Dual-stack: Set both ipv4_cidr and ipv6_cidr\n\nThe parent VirtualNetwork relationship should be specified via metadata.annotations using the 'osac.io/owner-reference'\nkey with the VirtualNetwork ID as the value. This establishes resource hierarchy for garbage collection, ensuring\nthat Subnets are automatically cleaned up when their parent VirtualNetwork is deleted.\n\nCIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the\nparent VirtualNetwork's CIDR. Validation is enforced at the service layer."
+      "description": "Represents a subdivision of a VirtualNetwork for organizing compute instances.\n\nSubnets subdivide VirtualNetwork IP address space into smaller, manageable segments. Each Subnet belongs to exactly\none parent VirtualNetwork and must be in the same region. Initially, the system supports a 1:1 mapping between\nVirtualNetwork and Subnet (one subnet per network), but the schema is designed to support multiple subnets per\nVirtualNetwork in the future.\n\nSubnets support flexible IP addressing to match the parent VirtualNetwork's capabilities:\n- IPv4-only: Set ipv4_cidr, leave ipv6_cidr empty\n- IPv6-only: Set ipv6_cidr, leave ipv4_cidr empty\n- Dual-stack: Set both ipv4_cidr and ipv6_cidr\n\nThe parent VirtualNetwork relationship is specified via the spec.virtual_network field.\n\nCIDR blocks must be non-overlapping within the same VirtualNetwork. Each Subnet's CIDR must be a subset of the\nparent VirtualNetwork's CIDR. Validation is enforced at the service layer."
     },
     "v1SubnetSpec": {
       "type": "object",
