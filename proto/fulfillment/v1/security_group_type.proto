@@ -30,21 +30,12 @@ import "shared/v1/metadata_type.proto";
 // SecurityGroups are scoped to a VirtualNetwork and can be attached to multiple compute instances within that
 // network. They cannot be used across different VirtualNetworks.
 //
-// The parent VirtualNetwork relationship is established via metadata.annotations using the 'osac.io/owner-reference'
-// key with the VirtualNetwork ID as the value. This enables proper resource hierarchy for garbage collection - when
-// a VirtualNetwork is deleted, all associated SecurityGroups are automatically cleaned up.
-//
-// Design follows AWS Security Groups and Azure Network Security Groups (NSGs) patterns, adapted for cloud-native
-// multi-tenant environments.
+// The parent VirtualNetwork relationship is specified via the spec.virtual_network field.
 message SecurityGroup {
   // Unique identifier of the security group.
   string id = 1;
 
   // Metadata of the security group, including name, labels, tenants, and timestamps.
-  //
-  // The parent VirtualNetwork relationship should be specified via metadata.annotations using the
-  // 'osac.io/owner-reference' key with the VirtualNetwork ID as the value. This establishes resource
-  // hierarchy for garbage collection.
   shared.v1.Metadata metadata = 2;
 
   // Desired configuration of the security group (user-modifiable).
