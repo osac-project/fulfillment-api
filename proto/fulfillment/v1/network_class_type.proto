@@ -45,32 +45,15 @@ message NetworkClass {
   // guarantees, and any limitations or requirements.
   string description = 4;
 
-  // Implementation strategy identifier for this network class. This is the discriminator that VirtualNetwork
-  // resources use to select which network backend to use. For example: "udn-net", "phys-net", "ovn-kubernetes".
-  //
-  // This value is system-defined and immutable once the NetworkClass is created.
-  string implementation_strategy = 5;
-
-  // Class-specific configuration constraints and options. These define implementation-specific parameters that
-  // networks using this class must or may configure.
-  NetworkClassConstraints constraints = 6;
 
   // Capabilities that this network class supports. These describe what features are available when using this
   // network implementation strategy.
-  NetworkClassCapabilities capabilities = 7;
+  NetworkClassCapabilities capabilities = 5;
 
   // Current operational status of the network class.
-  NetworkClassStatus status = 8;
+  NetworkClassStatus status = 6;
 }
 
-// Defines configuration constraints for a specific NetworkClass implementation.
-//
-// This message contains implementation-specific parameters that may be required or optional when creating
-// VirtualNetworks using this class. Currently minimal to allow for future extension.
-message NetworkClassConstraints {
-  // Reserved for future implementation-specific constraint fields.
-  // Examples might include: required VLAN ranges, MTU constraints, required subnet sizes, etc.
-}
 
 // Describes the capabilities supported by a NetworkClass.
 //
